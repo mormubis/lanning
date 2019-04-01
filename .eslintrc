@@ -1,0 +1,20 @@
+{
+  "env": {
+    "browser": true,
+    "jest": true
+  },
+  "extends": ["airbnb", "prettier"],
+  "parser": "babel-eslint",
+  "settings": {
+    "react": {
+      "version": "16.8"
+    }
+  },
+  "rules": {
+    "import/no-named-as-default": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-filename-extension": ["on", { "extensions": [".js", ".jsx"] }],
+    "react/jsx-one-expression-per-line": "off",
+    "react/require-default-props": "off"
+  }
+}
