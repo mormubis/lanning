@@ -3,7 +3,12 @@
     "browser": true,
     "jest": true
   },
-  "extends": ["airbnb", "prettier"],
+  "extends": [
+    "plugin:react/recommended",
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
   "parser": "babel-eslint",
   "settings": {
     "react": {
@@ -12,9 +17,22 @@
   },
   "rules": {
     "import/no-named-as-default": "off",
+    "react/destructuring-assignment": [
+      "warn",
+      "always",
+      {
+        "ignoreClassFields": true
+      }
+    ],
     "react/forbid-prop-types": "off",
-    "react/jsx-filename-extension": ["on", { "extensions": [".js", ".jsx"] }],
+    "react/jsx-filename-extension": [
+      "on",
+      {
+        "extensions": [".js", ".jsx"]
+      }
+    ],
     "react/jsx-one-expression-per-line": "off",
+    "react/no-did-update-set-state": "off",
     "react/require-default-props": "off"
   }
 }
