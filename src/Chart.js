@@ -11,14 +11,23 @@ const Context = createContext({
 
 const { Provider } = Context;
 
-const useScales = names => {
+const useScales = ({ scales: names, sizes = [] }) => {
   const { scales } = useContext(Context);
 
-  return names.map(name => scales[name]);
+  return names.map((name, index) => {
+    let scale = scales[name];
+
+    if (scale) {
+      scale = scale.copy();
+      scale.range([0, sizes[index]]);
+    }
+
+    return scale;
+  });
 };
 
-const useScale = name => {
-  return useScales([name]);
+const useScale = ({ scale, size, ...rest }) => {
+  return useScales({ scales: [scale], sizes: [size], ...rest });
 };
 
 class Chart extends Component {
