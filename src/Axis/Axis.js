@@ -1,15 +1,8 @@
-import React, { useMemo } from 'react';
-import { Layer } from 'calvin-svg';
+import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import Tick from './Tick';
-
-const OPPOSITE = {
-  bottom: 'top',
-  left: 'right',
-  right: 'left',
-  top: 'bottom',
-};
+import { useLayout } from '../Layout';
+import { useScale } from '../Chart';
 
 const useOrientation = ({ horizontal, vertical }) => {
   return useMemo(() => {
@@ -34,93 +27,48 @@ const usePosition = ({ bottom, left, right, top }) => {
 };
 
 const Axis = props => {
-  const {
-    children,
-    color,
-    height,
-    scale,
-    ticks: steps,
-    unit,
-    width,
-    x,
-    y,
-  } = props;
-
-  if (!scale) {
-    return null;
-  }
+  const { children, name, ticks: nTicks, unit } = props;
 
   const position = usePosition(props);
-  const ticks = scale.ticks(steps);
-
   const orientation = useOrientation({
     horizontal: position === 'left' || position === 'right',
     vertical: position === 'bottom' || position === 'top',
   });
   const isHorizontal = orientation === 'horizontal';
 
+  const { height, width, x, y } = useLayout(props);
+  const scale = useScale({ ...props, size: isHorizontal ? width : height });
+
+  if (!scale) {
+    return null;
+  }
+
+  const ticks = scale.ticks(nTicks);
+
   const inverted =
     (isHorizontal && position === 'top') ||
     (!isHorizontal && position === 'left');
 
-  if (children) {
-    return children({
-      height,
-      inverted,
-      orientation,
-      position,
-      scale,
-      ticks,
-      unit,
-      width,
-      x,
-      y,
-    });
-  }
-
-  return (
-    <Layer x={x} y={y}>
-      {ticks.map(tick => (
-        <Tick
-          color={color}
-          key={tick}
-          stickTo={OPPOSITE[position]}
-          {...(isHorizontal
-            ? {
-                x: scale(tick),
-                y: -height * !inverted + 6 * (inverted ? -1 : 1),
-              }
-            : {
-                x: width * !inverted + 6 * (inverted ? 1 : -1),
-                y: -scale(tick),
-              })}
-        >
-          {`${tick} ${unit}`}
-        </Tick>
-      ))}
-    </Layer>
-  );
-};
-
-Axis.defaultProps = {
-  color: '#222222',
-  height: 0,
-  ticks: 2,
-  width: 0,
-  x: 0,
-  y: 0,
+  return children({
+    height,
+    inverted,
+    name,
+    orientation,
+    position,
+    scale,
+    ticks,
+    unit,
+    width,
+    x,
+    y,
+  });
 };
 
 Axis.propTypes = {
-  children: PropTypes.func,
-  color: PropTypes.string,
-  height: PropTypes.number,
+  children: PropTypes.func.isRequired,
+  name: PropTypes.string,
   ticks: PropTypes.number,
   unit: PropTypes.string,
-  scale: PropTypes.func,
-  width: PropTypes.number,
-  x: PropTypes.number,
-  y: PropTypes.number,
 };
 
 export default Axis;
