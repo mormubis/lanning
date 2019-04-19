@@ -1,9 +1,8 @@
-import { createContext, useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import { extent, tickStep } from 'd3';
 
+import { Context } from './Chart';
 import Scales from './Scales';
-
-const context = createContext({ set() {} });
 
 const useDomain = ({ data, from, to, values }) => {
   return useMemo(() => {
@@ -28,7 +27,7 @@ const useDomain = ({ data, from, to, values }) => {
 
 const Scale = props => {
   const { name, type } = props;
-  const { set } = useContext(context);
+  const { setScale } = useContext(Context);
   const [domain, isContinuous] = useDomain(props);
 
   const Type = Scales[!isContinuous ? 'point' : type] || Scales.linear;
@@ -43,7 +42,9 @@ const Scale = props => {
   const scale = Type();
   scale.domain(fixedDomain);
 
-  set(name, scale);
+  useEffect(() => {
+    setScale(name, scale);
+  }, [name, domain, type]);
 
   return null;
 };
