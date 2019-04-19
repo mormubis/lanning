@@ -62,7 +62,7 @@ const VAxis = ({
         ticks={nTicks}
         type={type}
       />
-      <Layer x={x} y={y}>
+      <Layer height={height} width={width} x={x} y={y}>
         <Text>{`${name}${unit ? `(${unit})` : ''}`}</Text>
         {ticks.map(tick => (
           <Tick color={color} key={tick} stickTo="left" x={0} y={scale(tick)}>
