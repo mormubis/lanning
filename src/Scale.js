@@ -34,7 +34,7 @@ const Scale = props => {
 
   let fixedDomain = domain;
   if (isContinuous) {
-    const step = tickStep(domain[0], domain[1]);
+    const step = tickStep(domain[0], domain[1], 30);
 
     fixedDomain = [domain[0], Math.ceil(domain[1] / step) * step];
   }
