@@ -26,25 +26,26 @@ const useDomain = ({ data, from, to, values }) => {
 };
 
 const Scale = props => {
-  const { name, type } = props;
+  const { name, ticks, type } = props;
   const { setScale } = useContext(Context);
-  const [domain, isContinuous] = useDomain(props);
+  const [defaultDomain, isContinuous] = useDomain(props);
 
   const Type = Scales[!isContinuous ? 'point' : type] || Scales.linear;
 
-  let fixedDomain = domain;
+  let domain = defaultDomain;
   if (isContinuous) {
-    const step = tickStep(domain[0], domain[1], 30);
+    const [start, stop] = defaultDomain;
+    const step = tickStep(start, stop, ticks);
 
-    fixedDomain = [domain[0], Math.ceil(domain[1] / step) * step];
+    domain = [start, Math.ceil(stop / step) * step];
   }
 
   const scale = Type();
-  scale.domain(fixedDomain);
+  scale.domain(domain);
 
   useEffect(() => {
     setScale(name, scale);
-  }, [name, domain, type]);
+  }, [name, defaultDomain, ticks, type]);
 
   return null;
 };
