@@ -1,7 +1,6 @@
-import { createContext } from 'react';
+export * from './Axis';
+export * from './Series';
 
-export const { Provider, Consumer } = createContext({});
+export { default as Scale } from './Scale';
 
-const Chart = {};
-
-export default Chart;
+export { default } from './Chart';
