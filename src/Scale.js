@@ -9,7 +9,7 @@ const Scale = ({ domain = [], name, ticks, type }) => {
   const { setScale } = useContext(Context);
 
   useEffect(() => {
-    const isContinuous = domain.length > 2;
+    const isContinuous = domain.length === 2;
 
     const Type = Scales[!isContinuous ? 'point' : type] || Scales.linear;
 
@@ -25,7 +25,7 @@ const Scale = ({ domain = [], name, ticks, type }) => {
     scale.domain(fixed);
 
     setScale(name, scale);
-  }, [name, domain, ticks, type]);
+  }, [name, JSON.stringify(domain), ticks, type]);
 
   return null;
 };
