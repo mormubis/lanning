@@ -14,20 +14,22 @@ const { Provider } = Context;
 const useScales = ({ scales: names, sizes = [] }) => {
   const { scales } = useContext(Context);
 
-  return names.map((name, index) => {
-    let scale = scales[name];
+  return names
+    .map((name, index) => {
+      let scale = scales[name];
 
-    if (scale) {
-      scale = scale.copy();
-      scale.range([0, sizes[index]]);
-    }
+      if (scale) {
+        scale = scale.copy();
+        scale.range([0, sizes[index]]);
+      }
 
-    return scale;
-  });
+      return scale;
+    })
+    .filter(Boolean);
 };
 
 const useScale = ({ scale, size, ...rest }) => {
-  return useScales({ scales: [scale], sizes: [size], ...rest });
+  return useScales({ scales: [scale], sizes: [size], ...rest })[0];
 };
 
 class Chart extends Component {
@@ -68,6 +70,8 @@ Chart.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
 };
 
 export { Context, useScale, useScales };
