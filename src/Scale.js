@@ -5,7 +5,7 @@ import { tickStep } from 'd3';
 import { Context } from './Chart';
 import Scales from './Scales';
 
-const Scale = ({ domain, name, ticks, type }) => {
+const Scale = ({ domain = [], name, ticks, type }) => {
   const { setScale } = useContext(Context);
 
   useEffect(() => {
