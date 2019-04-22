@@ -14,7 +14,8 @@ export const Bar = ({ color, data: raw, delay, duration, ...props }) => {
             duration={duration / 2}
             delay={delay + ((duration / 2) * index) / (data.length - 1)}
             height={size}
-            x={position}
+            key={position}
+            x={position - 4}
             y={0}
           />
         ))

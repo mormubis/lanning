@@ -24,8 +24,6 @@ class Bar extends Component {
     width: PropTypes.number,
   };
 
-  prevHeight = 0;
-
   render() {
     const { prevHeight } = this;
     const {
@@ -34,7 +32,6 @@ class Bar extends Component {
       duration,
       ease,
       height,
-      radius,
       width,
       ...props
     } = this.props;
@@ -46,8 +43,8 @@ class Bar extends Component {
           delay={delay}
           duration={duration}
           ease={ease}
+          fill="freeze"
           from={prevHeight}
-          radius={radius}
           to={height}
         />
         {children}
