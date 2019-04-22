@@ -11,7 +11,7 @@ const Context = createContext({
 
 const { Provider } = Context;
 
-const useScales = ({ scales: names, sizes = [] }) => {
+const useScales = ({ scales: names = [], ranges = [] }) => {
   const { scales } = useContext(Context);
 
   return names
@@ -20,7 +20,7 @@ const useScales = ({ scales: names, sizes = [] }) => {
 
       if (scale) {
         scale = scale.copy();
-        scale.range([0, sizes[index]]);
+        scale.range([0, ranges[index]]);
       }
 
       return scale;
@@ -28,8 +28,8 @@ const useScales = ({ scales: names, sizes = [] }) => {
     .filter(Boolean);
 };
 
-const useScale = ({ scale, size, ...rest }) => {
-  return useScales({ scales: [scale], sizes: [size], ...rest })[0];
+const useScale = ({ name, range }) => {
+  return useScales({ scales: [name], ranges: [range] })[0];
 };
 
 class Chart extends Component {
@@ -52,8 +52,8 @@ class Chart extends Component {
     const { scales } = this.state;
 
     return (
-      <SVG {...props}>
-        <Layer transform="scale(1, -1)">
+      <SVG height={height} width={width} {...props}>
+        <Layer transform={`scale(1, -1) translate(0, ${-height})`}>
           <Provider value={{ scales, setScale }}>
             <Layout height={height} width={width}>
               {children}

@@ -3,44 +3,43 @@ import PropTypes from 'prop-types';
 
 import { Layer } from 'calvin-svg';
 
+import { useScales } from './Chart';
+import { useLayout } from './Layout';
+
 const Serie = ({
   children = () => {},
-  data: raw,
-  height,
-  scales,
-  width,
-  sizes = [width, height],
-  x,
-  y,
+  data: raw = [],
+  ranges = [],
+  scales: scaleNames = [],
+  name = scaleNames.join(','),
+  ...rest
 }) => {
+  const { height, width, x, y } = useLayout({ ...rest, name });
+  const scales = useScales({
+    ranges: ranges.length > 0 ? ranges : [width, height],
+    scales: scaleNames,
+  });
+
   const dimensions = raw[0].length;
 
   if (scales.length !== dimensions) {
     return null;
   }
 
-  scales.map((scale, index) => scale.range([0, sizes[index] || 0]));
-
   const data = raw.map(datum =>
-    datum.map((value, index) => scales[index](value)),
+    datum.map((value, index) => {
+      const domain = scales[index].domain();
+      const mapped = scales[index](value);
+
+      return mapped !== undefined ? mapped : scales[index](domain[value]);
+    }),
   );
 
   return (
-    <Layer x={x} y={y}>
+    <Layer height={height} width={width} x={x} y={y}>
       {children({ data })}
     </Layer>
   );
-};
-
-Serie.defaultProps = {
-  children() {},
-  data: [],
-  height: 0,
-  scales: [],
-  sizes: [],
-  width: 0,
-  x: 0,
-  y: 0,
 };
 
 Serie.propTypes = {
@@ -51,12 +50,9 @@ Serie.propTypes = {
       PropTypes.number,
     ]),
   ),
-  height: PropTypes.number,
-  scales: PropTypes.arrayOf(PropTypes.func),
-  sizes: PropTypes.arrayOf(PropTypes.number),
-  width: PropTypes.number,
-  x: PropTypes.number,
-  y: PropTypes.number,
+  name: PropTypes.string,
+  ranges: PropTypes.arrayOf(PropTypes.number),
+  scales: PropTypes.arrayOf(PropTypes.string),
 };
 
 export default Serie;
