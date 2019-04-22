@@ -1,9 +1,9 @@
+import external from 'rollup-plugin-auto-external';
 import babel from 'rollup-plugin-babel';
 import minify from 'rollup-plugin-babel-minify';
-import cleaner from 'rollup-plugin-cleaner';
+import del from 'rollup-plugin-delete';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
-import external from 'rollup-plugin-peer-deps-external';
 import replace from 'rollup-plugin-replace';
 import { sizeSnapshot } from 'rollup-plugin-size-snapshot';
 import visualizer from 'rollup-plugin-visualizer';
@@ -30,7 +30,7 @@ const config = {
   ],
   plugins: [
     external({ includeDependencies: true }),
-    cleaner({
+    del({
       targets: ['./dist/'],
     }),
     babel({
