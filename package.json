@@ -1,7 +1,7 @@
 {
   "author": "Adrian de la Rosa <adrian@joinedapp.com>",
   "dependencies": {
-    "calvin-svg": "^1.2.4",
+    "calvin-svg": "^1.4.3",
     "d3": "^5.9.2"
   },
   "description": "Build forms in React as you do in HTML (with some 🍬!!!)",
@@ -29,7 +29,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "regenerator-runtime": "^0.13.2",
-    "rollup": "^1.10.0",
+    "rollup": "^1.10.1",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-babel-minify": "^8.0.0",
     "rollup-plugin-cleaner": "^0.2.0",
