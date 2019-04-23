@@ -87,7 +87,7 @@ class Layout extends Component {
             ...acc,
             [name]: {
               height: SVGHeight - regions.top.height - regions.bottom.height,
-              width: SVGWidth - regions.top.height - regions.bottom.height,
+              width: SVGWidth - regions.left.width - regions.right.width,
               x: regions.left.width,
               y: regions.bottom.height,
             },
