@@ -5,10 +5,19 @@ import Serie from '../Serie';
 import Shape from '../Figures/Line';
 import Point from '../Figures/Point';
 
-export const Bar = ({ color, data: raw, delay, duration, ...props }) => {
-  return (
-    <Serie {...props}>
-      {({ data }) => (
+export const Bar = ({ color, data: raw, delay, duration, ...props }) => (
+  <Serie {...props} data={raw.map((value, index) => [index, value])}>
+    {({ data }) => {
+      const points = data
+        .map((value, index) => [...value, index])
+        .filter(([, positionY], index) => {
+          const [, previousY] = data[index - 1] || [];
+          const [, nextY] = data[index + 1] || [];
+
+          return previousY !== positionY || nextY !== positionY;
+        });
+
+      return (
         <>
           <Shape
             color={color}
@@ -16,21 +25,21 @@ export const Bar = ({ color, data: raw, delay, duration, ...props }) => {
             duration={duration / 2}
             points={data}
           />
-          {data.map(([x, y], index) => (
+          {points.map(([x, y, index]) => (
             <Point
               color={color}
               delay={delay + ((duration / 4) * index) / (data.length - 1)}
-              duration={(duration * 3) / 4}
+              duration={duration / 4}
               key={`${x},${y}`}
               x={x}
               y={y}
             />
           ))}
         </>
-      )}
-    </Serie>
-  );
-};
+      );
+    }}
+  </Serie>
+);
 
 Bar.defaultProps = {
   color: '#222222',

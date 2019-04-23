@@ -31,7 +31,7 @@ export class Line extends Component {
   state = { length: 0 };
 
   componentDidMount() {
-    const length = this.element.current.getTotalLength();
+    const length = this.element.current.length();
 
     this.setState({ length });
   }
@@ -54,6 +54,7 @@ export class Line extends Component {
       <Shape
         ref={this.element}
         strokeDasharray={length}
+        points={points}
         {...props}
         opacity={length === 0 ? 0 : opacity}
       >
