@@ -37,7 +37,7 @@ const Serie = ({
 
   return (
     <Layer height={height} width={width} x={x} y={y}>
-      {children({ data })}
+      {children({ data, height, width })}
     </Layer>
   );
 };
