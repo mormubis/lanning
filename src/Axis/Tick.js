@@ -1,6 +1,7 @@
 import React from 'react';
-import { Text } from 'calvin-svg';
 import PropTypes from 'prop-types';
+
+import Text from '../Shapes/Text';
 
 const Tick = ({ stickTo, ...props }) => {
   const isHorizontal = stickTo === 'left' || stickTo === 'right';
