@@ -1,64 +1,61 @@
-import React, { Component } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Animation, Area as Shape } from 'calvin-svg';
 
-class Area extends Component {
-  static defaultProps = {
-    duration: 3000,
-    ease: 'cubic-out',
-  };
+const Area = ({
+  children,
+  curve,
+  delay = 0,
+  duration = 3000,
+  ease = 'cubic-out',
+  points,
+  ...props
+}) => {
+  const prevPoints = useRef(points.map(([x]) => [x, 0, 0]));
+  const hash = JSON.stringify(points);
 
-  static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
-    curve: PropTypes.string,
-    delay: PropTypes.number,
-    duration: PropTypes.number,
-    ease: PropTypes.string,
-    points: PropTypes.arrayOf(PropTypes.number).isRequired,
-  };
+  useEffect(() => {
+    prevPoints.current = points;
+  }, [hash]);
 
-  prevPoints = this.props.points.fill(0);
+  return (
+    <Shape curve={curve} {...props}>
+      <Animation
+        attribute="d"
+        delay={delay}
+        duration={duration}
+        ease={ease}
+        fill="freeze"
+        step={percentage =>
+          Shape.d({
+            curve,
+            points: points.map(([x, y1, y0], index) => {
+              const [, prevY1, prevY0] = prevPoints.current[index];
 
-  componentDidUpdate(prevProps) {
-    this.prevPoints = prevProps.points;
-  }
+              return [
+                x,
+                prevY1 + (y1 - prevY1) * percentage,
+                ...(y0 && [(y0 - prevY0) * percentage]),
+              ];
+            }),
+          })
+        }
+      />
+      {children}
+    </Shape>
+  );
+};
 
-  render() {
-    const { prevPoints } = this;
-    const {
-      children,
-      curve,
-      delay,
-      duration,
-      ease,
-      points,
-      ...props
-    } = this.props;
-
-    return (
-      <Shape curve={curve} points={points} {...props}>
-        <Animation
-          attribute="d"
-          delay={delay}
-          duration={duration}
-          ease={ease}
-          step={percentage =>
-            Shape.d({
-              curve,
-              points: points.map(
-                (value, index) =>
-                  prevPoints[index] + (value - prevPoints[index]) * percentage,
-              ),
-            })
-          }
-        />
-        {children}
-      </Shape>
-    );
-  }
-}
+Area.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  curve: PropTypes.string,
+  delay: PropTypes.number,
+  duration: PropTypes.number,
+  ease: PropTypes.string,
+  points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
+};
 
 export default Area;
