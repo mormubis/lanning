@@ -9,7 +9,7 @@ const Scale = ({ domain = [], name, ticks = 2, type }) => {
   const { setScale } = useContext(Context);
 
   useEffect(() => {
-    const isContinuous = domain.length === 2;
+    const isContinuous = domain.length === 2 && type !== 'point';
 
     const Type = Scales[!isContinuous ? 'point' : type] || Scales.linear;
 
