@@ -7,7 +7,16 @@ import memoize from 'underscore-es/memoize';
 const Context = createContext({});
 const { Provider } = Context;
 
-const useLayout = ({ height = 0, name, position = 'center', width = 0 }) => {
+const useLayout = ({
+  bottom = 0,
+  height = 0,
+  left = 0,
+  name,
+  position = 'center',
+  right = 0,
+  top = 0,
+  width = 0,
+}) => {
   if (!name) {
     throw new Error('hello');
   }
@@ -16,9 +25,16 @@ const useLayout = ({ height = 0, name, position = 'center', width = 0 }) => {
 
   useEffect(() => {
     setComponentInPosition({ height, name, width }, position);
-  }, [name, position, height, width]);
+  }, [name, height, position, width]);
 
-  return canvas[name] || { height: 0, width: 0, x: 0, y: 0 };
+  const rect = canvas[name] || { height: 0, width: 0, x: 0, y: 0 };
+
+  return {
+    height: rect.height - top - bottom,
+    width: rect.width - left - right,
+    x: rect.x + (left + right) / 2,
+    y: rect.y + (top + bottom) / 2,
+  };
 };
 
 class Layout extends Component {
