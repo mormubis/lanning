@@ -9,31 +9,37 @@ const Grid = ({
   color = '#222222',
   columns = 0,
   left = 0,
+  hideBorders = false,
   right = 0,
   rows = 0,
   thickness = 1,
   top = 0,
   ...rest
 }) => {
-  const { height, width } = useLayout({ ...rest, name: 'grid' });
+  const { height, width, x, y } = useLayout({ ...rest, name: 'grid' });
 
   const gap = [
     columns ? (width - left - right) / columns : width,
     rows ? (height - top - bottom) / rows : height,
   ];
 
-  const horizontals = Array(rows + 1)
+  let horizontals = Array(rows ? rows + 1 : 0)
     .fill(0)
     .map((ignore, index) => index)
-    .map(row => row * gap[1] + left);
+    .map(row => row * gap[1] + top);
 
-  const verticals = Array(columns + 1)
+  let verticals = Array(columns ? columns + 1 : 0)
     .fill(0)
     .map((ignore, index) => index)
     .map(column => column * gap[0] + left);
 
+  if (hideBorders) {
+    horizontals = horizontals.slice(1, -1);
+    verticals = verticals.slice(1, -1);
+  }
+
   return (
-    <Layer name="grid">
+    <Layer name="grid" x={x} y={y}>
       {horizontals.map(row => (
         <Line
           color={color}
@@ -58,6 +64,7 @@ Grid.propTypes = {
   bottom: PropTypes.number,
   color: PropTypes.string,
   columns: PropTypes.number,
+  hideBorders: PropTypes.bool,
   left: PropTypes.number,
   right: PropTypes.number,
   rows: PropTypes.number,
