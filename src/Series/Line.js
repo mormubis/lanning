@@ -23,6 +23,7 @@ export const Bar = ({ color, data: raw, delay, duration, ...props }) => (
             color={color}
             delay={delay}
             duration={duration / 2}
+            opacity={0.2}
             points={data}
           />
           {points.map(([x, y, index]) => (

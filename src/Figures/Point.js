@@ -10,13 +10,7 @@ export const Point = ({
   radius,
   ...props
 }) => (
-  <Circle
-    fill="white"
-    radius={0}
-    stroke={color}
-    strokeWidth={(radius * 2) / 3}
-    {...props}
-  >
+  <Circle fill="white" stroke={color} strokeWidth={(radius * 2) / 3} {...props}>
     <Animation
       attribute="r"
       delay={delay}

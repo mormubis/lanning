@@ -7,7 +7,7 @@ export class Line extends Component {
     duration: 3000,
     ease: 'cubic-out',
     opacity: 1,
-    thickness: 4,
+    thickness: 3,
   };
 
   static propTypes = {
@@ -20,7 +20,7 @@ export class Line extends Component {
     duration: PropTypes.number,
     ease: PropTypes.string,
     opacity: PropTypes.number,
-    points: PropTypes.arrayOf(PropTypes.number).isRequired,
+    points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
     thickness: PropTypes.number,
   };
 
