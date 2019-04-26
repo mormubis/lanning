@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useLayoutEffect, useRef, useState } from 'react';
 import { Layer } from 'calvin-svg';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,8 @@ import Text from '../Shapes/Text';
 
 import { useDomain } from './Axis';
 import Tick from './Tick';
+
+const OFFSET = 18;
 
 const usePosition = ({ left, right }) => {
   return useMemo(() => {
@@ -29,15 +31,29 @@ const VAxis = ({
   ticks: nTicks,
   type,
   unit = '',
-  width = 25,
+  width: defaultWidth = 25,
   ...rest
 }) => {
   const domain = useDomain(rest);
+  const element = useRef(null);
   const position = usePosition(rest);
 
-  const { height, x, y } = useLayout({ name, position, width, ...rest });
+  const [width, setWidth] = useState(defaultWidth);
+
+  const { height, x, y } = useLayout({
+    name,
+    position,
+    width,
+    ...rest,
+  });
 
   const scale = useScale({ name, range: height });
+
+  useLayoutEffect(() => {
+    if (element.current) {
+      setWidth(element.current.getBBox().width + OFFSET);
+    }
+  });
 
   if (!scale) {
     return (
@@ -53,6 +69,8 @@ const VAxis = ({
 
   const ticks = scale.ticks ? scale.ticks(nTicks) : scale.domain();
 
+  const isInverted = position === 'right';
+
   return (
     <>
       <Scale
@@ -62,10 +80,21 @@ const VAxis = ({
         ticks={nTicks}
         type={type}
       />
-      <Layer height={height} width={width} x={x} y={y}>
-        <Text>{`${name}${unit ? `(${unit})` : ''}`}</Text>
+      <Layer height={height} ref={element} width={width} x={x} y={y}>
+        <Text
+          color={color}
+          textAlign={isInverted ? 'left' : 'right'}
+          x={isInverted ? OFFSET : width - OFFSET}
+          y={height}
+        >{`${name}${unit ? `(${unit})` : ''}`}</Text>
         {ticks.map(tick => (
-          <Tick color={color} key={tick} stickTo="left" x={0} y={scale(tick)}>
+          <Tick
+            color={color}
+            key={tick}
+            stickTo={isInverted ? 'left' : 'right'}
+            x={isInverted ? OFFSET : width - OFFSET}
+            y={scale(tick)}
+          >
             {tick}
           </Tick>
         ))}

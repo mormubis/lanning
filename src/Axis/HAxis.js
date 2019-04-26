@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Layer } from 'calvin-svg';
 import PropTypes from 'prop-types';
 
@@ -10,6 +10,8 @@ import Text from '../Shapes/Text';
 
 import { useDomain } from './Axis';
 import Tick from './Tick';
+
+const OFFSET = 10;
 
 const usePosition = ({ bottom, top }) => {
   return useMemo(() => {
@@ -24,7 +26,7 @@ const usePosition = ({ bottom, top }) => {
 };
 const HAxis = ({
   color,
-  height = 25,
+  height: defaultHeight = 25,
   name,
   ticks: nTicks,
   type,
@@ -32,11 +34,20 @@ const HAxis = ({
   ...rest
 }) => {
   const domain = useDomain(rest);
+  const element = useRef(null);
   const position = usePosition(rest);
+
+  const [height, setHeight] = useState(defaultHeight);
 
   const { width, x, y } = useLayout({ name, position, height, ...rest });
 
   const scale = useScale({ name, range: width });
+
+  useLayoutEffect(() => {
+    if (element.current) {
+      setHeight(element.current.getBBox().height + OFFSET);
+    }
+  });
 
   if (!scale) {
     return (
@@ -52,6 +63,8 @@ const HAxis = ({
 
   const ticks = scale.ticks ? scale.ticks(nTicks) : scale.domain();
 
+  const isInverted = position === 'top';
+
   return (
     <>
       <Scale
@@ -61,10 +74,22 @@ const HAxis = ({
         ticks={nTicks}
         type={type}
       />
-      <Layer height={height} width={width} x={x} y={y}>
-        <Text>{`${name}${unit ? `(${unit})` : ''}`}</Text>
+      <Layer height={height} ref={element} width={width} x={x} y={y}>
+        <Text
+          color={color}
+          textAlign="right"
+          verticalAlign="baseline"
+          x={width}
+          y={isInverted ? OFFSET : height - OFFSET}
+        >{`${name}${unit ? `(${unit})` : ''}`}</Text>
         {ticks.map(tick => (
-          <Tick color={color} key={tick} stickTo="left" x={scale(tick)} y={0}>
+          <Tick
+            color={color}
+            key={tick}
+            stickTo={isInverted ? 'bottom' : 'top'}
+            x={scale(tick)}
+            y={isInverted ? OFFSET : height - OFFSET}
+          >
             {tick}
           </Tick>
         ))}
