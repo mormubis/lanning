@@ -1,7 +1,7 @@
 {
   "author": "Adrian de la Rosa <adrian@joinedapp.com>",
   "dependencies": {
-    "calvin-svg": "^1.4.3",
+    "calvin-svg": "^2.0.3",
     "d3": "^5.9.2"
   },
   "description": "Build forms in React as you do in HTML (with some 🍬!!!)",
