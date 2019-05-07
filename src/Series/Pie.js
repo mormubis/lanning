@@ -35,8 +35,13 @@ export const Pie = ({
           <Layer transform="scale(-1, 1)" x={width}>
             {data
               .map(([size]) => size)
-              .map((size, index, array) => {
-                const startAngle = array[index - 1] || 0;
+              .reduce((acc, size) => {
+                const last = acc[acc.length - 1] || [0, 0];
+                const sum = last[0] + last[1];
+
+                return [...acc, [size, sum]];
+              }, [])
+              .map(([size, startAngle], index) => {
                 // skipping linter (we do not have any other unmutable value
                 const position = index;
 
