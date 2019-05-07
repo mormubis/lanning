@@ -27,6 +27,7 @@ const usePosition = ({ left, right }) => {
 
 const VAxis = ({
   color,
+  label,
   name,
   ticks: nTicks,
   type,
@@ -81,12 +82,14 @@ const VAxis = ({
         type={type}
       />
       <Layer height={height} ref={element} width={width} x={x} y={y}>
-        <Text
-          color={color}
-          textAlign={isInverted ? 'left' : 'right'}
-          x={isInverted ? OFFSET : width - OFFSET}
-          y={height}
-        >{`${name}${unit ? `(${unit})` : ''}`}</Text>
+        {(label || unit) && (
+          <Text
+            color={color}
+            textAlign={isInverted ? 'left' : 'right'}
+            x={isInverted ? OFFSET : width - OFFSET}
+            y={height + OFFSET}
+          >{`${label}${unit ? `(${unit})` : ''}`}</Text>
+        )}
         {ticks.map(tick => (
           <Tick
             color={color}
@@ -105,6 +108,7 @@ const VAxis = ({
 
 VAxis.propTypes = {
   color: PropTypes.string,
+  label: PropTypes.string,
   name: PropTypes.string.isRequired,
   ticks: PropTypes.number,
   unit: PropTypes.string,

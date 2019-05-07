@@ -27,6 +27,7 @@ const usePosition = ({ bottom, top }) => {
 const HAxis = ({
   color,
   height: defaultHeight = 25,
+  label,
   name,
   ticks: nTicks,
   type,
@@ -75,13 +76,15 @@ const HAxis = ({
         type={type}
       />
       <Layer height={height} ref={element} width={width} x={x} y={y}>
-        <Text
-          color={color}
-          textAlign="right"
-          verticalAlign="baseline"
-          x={width}
-          y={isInverted ? OFFSET : height - OFFSET}
-        >{`${name}${unit ? `(${unit})` : ''}`}</Text>
+        {(label || unit) && (
+          <Text
+            color={color}
+            textAlign="right"
+            verticalAlign="baseline"
+            x={width}
+            y={isInverted ? OFFSET : height - OFFSET}
+          >{`${label}${unit ? `(${unit})` : ''}`}</Text>
+        )}
         {ticks.map(tick => (
           <Tick
             color={color}
@@ -101,6 +104,7 @@ const HAxis = ({
 HAxis.propTypes = {
   color: PropTypes.string,
   height: PropTypes.number,
+  label: PropTypes.string,
   name: PropTypes.string,
   scale: PropTypes.string,
   ticks: PropTypes.number,
