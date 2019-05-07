@@ -38,6 +38,9 @@ const Grid = ({
     verticals = verticals.slice(1, -1);
   }
 
+  horizontals = [...new Set(horizontals)];
+  verticals = [...new Set(verticals)];
+
   return (
     <Layer name="grid" x={x} y={y}>
       {horizontals.map(row => (
