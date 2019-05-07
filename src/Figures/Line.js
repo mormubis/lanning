@@ -31,7 +31,7 @@ export class Line extends Component {
   state = { length: 0 };
 
   componentDidMount() {
-    const length = this.element.current.length();
+    const length = this.element.current.getTotalLength();
 
     this.setState({ length });
   }
