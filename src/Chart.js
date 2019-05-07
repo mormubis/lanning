@@ -33,8 +33,23 @@ const useScale = ({ name, range }) => {
 };
 
 class Chart extends Component {
+  static defaultProps = {
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+  };
+
   static propTypes = {
+    bottom: PropTypes.number,
+    children: PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
+    ]),
     height: PropTypes.number,
+    left: PropTypes.number,
+    right: PropTypes.number,
+    top: PropTypes.number,
     width: PropTypes.number,
   };
 
@@ -48,14 +63,25 @@ class Chart extends Component {
 
   render() {
     const { setScale } = this;
-    const { children, height, width, ...props } = this.props;
+    const {
+      bottom,
+      children,
+      height,
+      left,
+      right,
+      top,
+      width,
+      ...props
+    } = this.props;
     const { scales } = this.state;
 
     return (
       <SVG height={height} width={width} {...props}>
-        <Layer transform={`scale(1, -1) translate(0, ${-height})`}>
+        <Layer
+          transform={`scale(1, -1) translate(${left}, ${-height + bottom})`}
+        >
           <Provider value={{ scales, setScale }}>
-            <Layout height={height} width={width}>
+            <Layout height={height - top - bottom} width={width - left - right}>
               {children}
             </Layout>
           </Provider>
