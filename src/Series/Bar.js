@@ -1,10 +1,17 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import randomColor from 'random-color';
 
 import Shape from '../Figures/Bar';
 import Serie from '../Serie';
 
-export const Bar = ({ color, data: raw, delay, duration, ...props }) => {
+export const Bar = ({
+  color = randomColor().hexString(),
+  data: raw = [],
+  delay = 0,
+  duration = 3000,
+  ...props
+}) => {
   return (
     <Serie {...props} data={raw.map((value, index) => [index, value])}>
       {({ data }) =>

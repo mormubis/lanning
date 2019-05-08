@@ -1,12 +1,13 @@
 import React, { memo } from 'react';
 import PropTypes from 'prop-types';
+import randomColor from 'random-color';
 
 import Area from '../Figures/Area';
 import Serie from '../Serie';
 import Scale from '../Scale';
 
 export const Funnel = ({
-  color = '#222222',
+  color = randomColor().hexString(),
   curve = 'monotone-x',
   data: raw = [],
   delay = 0,

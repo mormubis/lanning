@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import randomColor from 'random-color';
 
 import Serie from '../Serie';
 import Shape from '../Figures/Line';
 import Point from '../Figures/Point';
 
-export const Bar = ({ color, data: raw, delay, duration, ...props }) => (
+export const Line = ({
+  color = randomColor().hexString(),
+  data: raw,
+  delay,
+  duration,
+  ...props
+}) => (
   <Serie {...props} data={raw.map((value, index) => [index, value])}>
     {({ data }) => {
       const points = data
@@ -42,18 +49,18 @@ export const Bar = ({ color, data: raw, delay, duration, ...props }) => (
   </Serie>
 );
 
-Bar.defaultProps = {
+Line.defaultProps = {
   color: '#222222',
   data: [],
   delay: 0,
   duration: 3000,
 };
 
-Bar.propTypes = {
+Line.propTypes = {
   color: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.number),
   delay: PropTypes.number,
   duration: PropTypes.number,
 };
 
-export default Bar;
+export default Line;

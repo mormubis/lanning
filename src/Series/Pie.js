@@ -1,18 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Layer } from 'calvin-svg';
+import randomColor from 'random-color';
 
 import Arc from '../Figures/Arc';
 import Scale from '../Scale';
 import Serie from '../Serie';
 
 export const Pie = ({
-  colors = ['#222222'],
   data: raw = [],
+  colors = Array(raw.length)
+    .fill(0)
+    .map(() => randomColor().hexString()),
+  cornerRadius = 4,
   delay = 0,
   duration = 3000,
   padAngle = 3,
-  radius = 4,
   thickness = 8,
   ...props
 }) => {
@@ -48,12 +51,12 @@ export const Pie = ({
                 return (
                   <Arc
                     color={colors[index % colors.length]}
+                    cornerRadius={cornerRadius}
                     delay={delay + (duration / data.length) * index}
                     duration={duration / data.length}
                     endAngle={startAngle + size - padAngle + OFFSET}
                     height={height}
                     key={position}
-                    radius={radius}
                     startAngle={startAngle + OFFSET}
                     thickness={thickness}
                     width={width}
@@ -71,11 +74,11 @@ export const Pie = ({
 
 Pie.propTypes = {
   colors: PropTypes.arrayOf(PropTypes.string),
+  cornerRadius: PropTypes.number,
   data: PropTypes.arrayOf(PropTypes.number),
   delay: PropTypes.number,
   duration: PropTypes.number,
   padAngle: PropTypes.number,
-  radius: PropTypes.number,
   thickness: PropTypes.number,
 };
 
