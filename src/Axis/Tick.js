@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import Text from '../Shapes/Text';
 
-const Tick = ({ stickTo, ...props }) => {
+const Tick = ({ stickTo = 'bottom', ...props }) => {
   const isHorizontal = stickTo === 'left' || stickTo === 'right';
 
   const textAlign = isHorizontal ? stickTo : 'center';
@@ -23,10 +23,6 @@ const Tick = ({ stickTo, ...props }) => {
       transform="scale(1, -1)"
     />
   );
-};
-
-Tick.defaultProps = {
-  stickTo: 'bottom',
 };
 
 Tick.propTypes = {
