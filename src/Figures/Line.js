@@ -40,6 +40,7 @@ const Line = ({
         duration={duration}
         ease={ease}
         from={length}
+        maxCount={1}
         strokeLinecap="round"
         strokeLinejoin="round"
         to={0}
@@ -52,11 +53,11 @@ const Line = ({
         step={percentage =>
           Shape.d({
             curve,
-            points: points.map(
-              (value, index) =>
-                prevPoints.current[index] +
-                (value - prevPoints.current[index]) * percentage,
-            ),
+            points: points.map(([x, y], index) => {
+              const [, prevY] = prevPoints.current[index];
+
+              return [x, prevY + (y - prevY) * percentage];
+            }),
           })
         }
       />

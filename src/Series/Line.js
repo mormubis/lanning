@@ -31,7 +31,7 @@ export const Bar = ({ color, data: raw, delay, duration, ...props }) => (
               color={color}
               delay={delay + ((duration / 4) * index) / (data.length - 1)}
               duration={duration / 4}
-              key={`${x},${y}`}
+              key={x}
               x={x}
               y={y}
             />
