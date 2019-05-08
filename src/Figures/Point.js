@@ -23,7 +23,7 @@ export const Point = ({
       fill="white"
       radius={0}
       stroke={color}
-      strokeWidth={(radius * 2) / 3}
+      strokeWidth={radius}
       y={y}
       {...props}
     >
@@ -34,6 +34,7 @@ export const Point = ({
         ease="bounce-out"
         fill="freeze"
         from={0}
+        maxCount={1}
         to={radius}
       />
       <Animation
@@ -55,7 +56,7 @@ Point.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
-  color: PropTypes.string.isRequired,
+  color: PropTypes.string,
   delay: PropTypes.number,
   duration: PropTypes.number,
   ease: PropTypes.string,
