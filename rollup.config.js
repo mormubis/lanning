@@ -30,9 +30,13 @@ const config = {
   ],
   plugins: [
     external({ includeDependencies: true }),
-    del({
-      targets: ['./dist/'],
-    }),
+    ...(env === 'production'
+      ? [
+          del({
+            targets: ['./dist/'],
+          }),
+        ]
+      : []),
     babel({
       exclude: '**/node_modules/**',
       // runtimeHelpers: true,
