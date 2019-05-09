@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { Layer, SVG } from 'calvin-svg';
+// We want to include this little function in our own bundle
+// eslint-disable-next-line import/no-extraneous-dependencies
 import uuid from 'uuid/v4';
 
 import Layout from './Layout';

@@ -1,5 +1,7 @@
 import React, { createContext, useContext } from 'react';
 import { Layer } from 'calvin-svg';
+// We want to include this little function in our own bundle
+// eslint-disable-next-line import/no-extraneous-dependencies
 import uuid from 'uuid/v4';
 
 import { useLayout } from '../Layout';
