@@ -19,7 +19,7 @@ const Area = ({
   }, [hash]);
 
   return (
-    <Shape curve={curve} {...props}>
+    <Shape curve={curve} points={[]} {...props}>
       <Animation
         attribute="d"
         delay={delay}
@@ -29,13 +29,14 @@ const Area = ({
         step={percentage =>
           Shape.d({
             curve,
-            points: points.map(([x, y1, y0], index) => {
+            points: points.map((point, index) => {
+              const [x, y1, y0] = point;
               const [, prevY1, prevY0] = prevPoints.current[index];
 
               return [
                 x,
                 prevY1 + (y1 - prevY1) * percentage,
-                ...(y0 && [(y0 - prevY0) * percentage]),
+                ...(point.length > 2 && [prevY0 + (y0 - prevY0) * percentage]),
               ];
             }),
           })
