@@ -4,14 +4,15 @@ import { Animation, Arc as Shape } from 'calvin-svg';
 
 const Arc = ({
   children,
+  cornerRadius,
   delay,
   duration = 500,
   ease = 'cubic-out',
   endAngle,
   height,
-  radius,
+  opacity: defaultOpacity = 1,
   startAngle,
-  thickness = 15,
+  thickness = 8,
   width,
   ...props
 }) => {
@@ -25,10 +26,11 @@ const Arc = ({
 
   return (
     <Shape
-      endAngle={prevEndAngle.current}
+      cornerRadius={cornerRadius}
+      endAngle={endAngle}
       height={height}
-      radius={radius}
-      startAngle={prevStartAngle.current}
+      opacity={0}
+      startAngle={startAngle}
       thickness={thickness}
       width={width}
       {...props}
@@ -41,18 +43,27 @@ const Arc = ({
         fill="freeze"
         step={percentage =>
           Shape.d({
+            cornerRadius,
             endAngle:
               prevEndAngle.current +
               (endAngle - prevEndAngle.current) * percentage,
             thickness,
             height,
-            radius,
             startAngle:
               prevStartAngle.current +
               (startAngle - prevStartAngle.current) * percentage,
             width,
           })
         }
+      />
+      <Animation
+        attribute="opacity"
+        delay={delay}
+        duration={50}
+        fill="freeze"
+        from={0}
+        maxCount={1}
+        to={defaultOpacity}
       />
       {children}
     </Shape>
@@ -64,12 +75,13 @@ Arc.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  cornerRadius: PropTypes.number,
   delay: PropTypes.number,
   duration: PropTypes.number,
   endAngle: PropTypes.number.isRequired,
   ease: PropTypes.string,
   height: PropTypes.number,
-  radius: PropTypes.number,
+  opacity: PropTypes.number,
   startAngle: PropTypes.number.isRequired,
   thickness: PropTypes.number,
   width: PropTypes.number,
