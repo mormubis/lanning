@@ -3,7 +3,8 @@
   "dependencies": {
     "calvin-svg": "^2.1.1",
     "d3": "^5.9.2",
-    "random-color": "^1.0.1"
+    "random-color": "^1.0.1",
+    "uuid": "^3.3.2"
   },
   "description": "Build forms in React as you do in HTML (with some 🍬!!!)",
   "devDependencies": {
@@ -29,6 +30,7 @@
     "prettier": "^1.17.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "regenerator-runtime": "^0.13.2",
     "rollup": "^1.11.3",
     "rollup-plugin-auto-external": "^2.0.0",
@@ -59,6 +61,7 @@
   "name": "lanning",
   "peerDependencies": {
     "react": "^16.8.0",
+    "react-dom": "^16.8.0",
     "prop-types": "^15.7.0"
   },
   "repository": "adelarosab/spooner",
