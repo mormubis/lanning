@@ -33,7 +33,7 @@ const Serie = ({
   const openTooltip = useCallback(
     ({ color, message, x: tooltipX, y: tooltipY }) => {
       setTooltipVisible(true);
-      setTooltip({ color, message, x: tooltipX, y: tooltipY });
+      setTooltip({ color, message, x: x + tooltipX, y: y + tooltipY });
     },
     [],
   );
