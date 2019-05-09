@@ -10,7 +10,7 @@ import Text from './Text';
 const HEIGHT = 32;
 const OFFSET = { x: 20, y: 16 };
 
-const Tooltip = ({ children, color, opacity, x: rawX, y: rawY }) => {
+const Tooltip = ({ children, color, opacity, x: rawX = 0, y: rawY = 0 }) => {
   const { height: maxHeight, width: maxWidth } = useLayout({ name: 'tooltip' });
   const id = useOverlay();
   const prevOpacity = useRef(opacity);
