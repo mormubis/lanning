@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import randomColor from 'random-color';
+// We want to include this little function in our own bundle
+// eslint-disable-next-line import/no-extraneous-dependencies
+import memoize from 'underscore-es/memoize';
 
 import Serie from '../Serie';
 import Shape from '../Figures/Line';
@@ -25,11 +28,11 @@ export const Line = ({
           return previousY !== positionY || nextY !== positionY;
         });
 
-      const handleTarget = value => ({ shape }) => {
+      const handleTarget = memoize(value => ({ shape }) => {
         const { x, y } = shape;
 
         return tooltip.open({ color, message: onTooltip(value), x, y });
-      };
+      });
 
       return (
         <>
@@ -48,8 +51,8 @@ export const Line = ({
               key={x}
               onBlur={tooltip.close}
               onFocus={handleTarget(raw[index])}
-              onMouseOver={handleTarget(raw[index])}
               onMouseOut={tooltip.close}
+              onMouseOver={handleTarget(raw[index])}
               x={x}
               y={y}
             />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Layer } from 'calvin-svg';
@@ -26,6 +26,18 @@ const Serie = ({
 
   const dimensions = raw[0].length;
 
+  const closeTooltip = useCallback(() => {
+    setTooltipVisible(false);
+  }, []);
+
+  const openTooltip = useCallback(
+    ({ color, message, x: tooltipX, y: tooltipY }) => {
+      setTooltipVisible(true);
+      setTooltip({ color, message, x: tooltipX, y: tooltipY });
+    },
+    [],
+  );
+
   if (scales.length !== dimensions) {
     return null;
   }
@@ -38,15 +50,6 @@ const Serie = ({
       return mapped !== undefined ? mapped : scales[index](domain[value]);
     }),
   );
-
-  const closeTooltip = () => {
-    setTooltipVisible(false);
-  };
-
-  const openTooltip = ({ color, message, x: tooltipX, y: tooltipY }) => {
-    setTooltipVisible(true);
-    setTooltip({ color, message, x: tooltipX, y: tooltipY });
-  };
 
   return (
     <Layer height={height} width={width} x={x} y={y}>

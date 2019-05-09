@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Layer } from 'calvin-svg';
 import randomColor from 'random-color';
+// We want to include this little function in our own bundle
+// eslint-disable-next-line import/no-extraneous-dependencies
+import memoize from 'underscore-es/memoize';
 
 import Arc from '../Figures/Arc';
 import Scale from '../Scale';
@@ -17,12 +20,27 @@ export const Pie = ({
   duration = 3000,
   padAngle = 3,
   thickness = 8,
+  tooltip: onTooltip = v => v,
   ...props
 }) => {
   const MAX = 360;
   const OFFSET = 180;
 
   const total = raw.reduce((acc, slice) => acc + slice, 0);
+
+  const handleTarget = memoize(
+    ({ color, height, tooltip, width, value }) => ({ shape }) => {
+      const [x, y] = shape.centroid;
+
+      return tooltip.open({
+        color,
+        message: onTooltip(value),
+        x: -x + width / 2,
+        y: y + height / 2,
+      });
+    },
+    (...argv) => JSON.stringify(argv),
+  );
 
   return (
     <>
@@ -34,7 +52,7 @@ export const Pie = ({
         scales={['pie']}
         ranges={[MAX]}
       >
-        {({ data, height, width }) => (
+        {({ data, height, tooltip, width }) => (
           <Layer transform="scale(-1, 1)" x={width}>
             {data
               .map(([size]) => size)
@@ -45,18 +63,37 @@ export const Pie = ({
                 return [...acc, [size, sum]];
               }, [])
               .map(([size, startAngle], index) => {
+                const color = colors[index % colors.length];
                 // skipping linter (we do not have any other unmutable value
                 const position = index;
 
                 return (
                   <Arc
-                    color={colors[index % colors.length]}
+                    color={color}
                     cornerRadius={cornerRadius}
                     delay={delay + (duration / data.length) * index}
                     duration={duration / data.length}
                     endAngle={startAngle + size - padAngle + OFFSET}
                     height={height}
                     key={position}
+                    onBlur={tooltip.close}
+                    onFocus={handleTarget({
+                      color,
+                      height,
+                      position,
+                      tooltip,
+                      width,
+                      value: raw[index],
+                    })}
+                    onMouseOut={tooltip.close}
+                    onMouseOver={handleTarget({
+                      color,
+                      height,
+                      position,
+                      tooltip,
+                      width,
+                      value: raw[index],
+                    })}
                     startAngle={startAngle + OFFSET}
                     thickness={thickness}
                     width={width}
@@ -80,6 +117,7 @@ Pie.propTypes = {
   duration: PropTypes.number,
   padAngle: PropTypes.number,
   thickness: PropTypes.number,
+  tooltip: PropTypes.func,
 };
 
 export default Pie;
