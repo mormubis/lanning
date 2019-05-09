@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Animation, Rect } from 'calvin-svg';
 
@@ -8,6 +8,7 @@ function Bar({
   duration = 500,
   ease = 'cubic-out',
   height = 0,
+  opacity: defaultOpacity = 1,
   radius = 4,
   width = 8,
   ...props
@@ -19,7 +20,7 @@ function Bar({
   }, [height]);
 
   return (
-    <Rect radius={radius} width={width} {...props}>
+    <Rect height={height} opacity={0} radius={radius} width={width} {...props}>
       <Animation
         attribute="height"
         delay={delay}
@@ -28,6 +29,15 @@ function Bar({
         fill="freeze"
         from={prevHeight.current}
         to={height}
+      />
+      <Animation
+        attribute="opacity"
+        delay={delay}
+        duration={50}
+        fill="freeze"
+        from={0}
+        maxCount={1}
+        to={defaultOpacity}
       />
       {children}
     </Rect>
@@ -43,8 +53,9 @@ Bar.propTypes = {
   duration: PropTypes.number,
   ease: PropTypes.string,
   height: PropTypes.number,
+  opacity: PropTypes.number,
   radius: PropTypes.number,
   width: PropTypes.number,
 };
 
-export default Bar;
+export default memo(Bar);

@@ -1,4 +1,10 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { Animation, Line as Shape } from 'calvin-svg';
 
@@ -80,4 +86,4 @@ Line.propTypes = {
   thickness: PropTypes.number,
 };
 
-export default Line;
+export default memo(Line);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Animation, Arc as Shape } from 'calvin-svg';
 
@@ -75,4 +75,4 @@ Arc.propTypes = {
   width: PropTypes.number,
 };
 
-export default Arc;
+export default memo(Arc);

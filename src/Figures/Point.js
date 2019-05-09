@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Animation, Circle } from 'calvin-svg';
 
@@ -60,8 +60,9 @@ Point.propTypes = {
   delay: PropTypes.number,
   duration: PropTypes.number,
   ease: PropTypes.string,
+  opacity: PropTypes.number,
   radius: PropTypes.number,
   y: PropTypes.number,
 };
 
-export default Point;
+export default memo(Point);

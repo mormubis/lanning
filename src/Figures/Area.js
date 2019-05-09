@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Animation, Area as Shape } from 'calvin-svg';
 
@@ -58,4 +58,4 @@ Area.propTypes = {
   points: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)).isRequired,
 };
 
-export default Area;
+export default memo(Area);
