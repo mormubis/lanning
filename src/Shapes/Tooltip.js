@@ -4,6 +4,7 @@ import { Animation, Circle, Layer, Rect } from 'calvin-svg';
 import PropTypes from 'prop-types';
 
 import { useLayout } from '../Layout';
+import { useOverlay } from './Overlay';
 import Text from './Text';
 
 const HEIGHT = 32;
@@ -11,6 +12,7 @@ const OFFSET = { x: 20, y: 16 };
 
 const Tooltip = ({ children, color, opacity, x: rawX, y: rawY }) => {
   const { height: maxHeight, width: maxWidth } = useLayout({ name: 'tooltip' });
+  const id = useOverlay();
   const prevOpacity = useRef(opacity);
   const text = useRef(null);
   const [width, setWidth] = useState(100);
@@ -61,7 +63,7 @@ const Tooltip = ({ children, color, opacity, x: rawX, y: rawY }) => {
         </Text>
       )}
     </Layer>,
-    document.getElementById('hello'),
+    document.getElementById(id),
   );
 };
 

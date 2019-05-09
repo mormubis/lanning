@@ -1,8 +1,10 @@
 import React, { Component, createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Layer, SVG } from 'calvin-svg';
+import uuid from 'uuid/v4';
 
 import Layout from './Layout';
+import Overlay, { Context as OverlayContext } from './Shapes/Overlay';
 
 const Context = createContext({
   scales: {},
@@ -10,6 +12,7 @@ const Context = createContext({
 });
 
 const { Provider } = Context;
+const { Provider: OverlayProvider } = OverlayContext;
 
 const useScales = ({ scales: names = [], ranges = [] }) => {
   const { scales } = useContext(Context);
@@ -55,6 +58,8 @@ class Chart extends Component {
 
   state = { scales: {} };
 
+  id = uuid();
+
   setScale = (name, value) => {
     this.setState(prevState => ({
       scales: { ...prevState.scales, [name]: value },
@@ -81,9 +86,15 @@ class Chart extends Component {
           transform={`scale(1, -1) translate(${left}, ${-height + bottom})`}
         >
           <Provider value={{ scales, setScale }}>
-            <Layout height={height - top - bottom} width={width - left - right}>
-              {children}
-            </Layout>
+            <OverlayProvider value={this.id}>
+              <Layout
+                height={height - top - bottom}
+                width={width - left - right}
+              >
+                {children}
+                <Overlay />
+              </Layout>
+            </OverlayProvider>
           </Provider>
         </Layer>
       </SVG>
