@@ -32,8 +32,8 @@ const useLayout = ({
   return {
     height: rect.height - top - bottom,
     width: rect.width - left - right,
-    x: rect.x + (left + right) / 2,
-    y: rect.y + (top + bottom) / 2,
+    x: rect.x + left,
+    y: rect.y + top,
   };
 };
 
