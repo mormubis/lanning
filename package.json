@@ -78,5 +78,5 @@
     "test": "jest --silent",
     "test:watch": "jest --watch"
   },
-  "version": "1.0.8"
+  "version": "1.0.9"
 }
