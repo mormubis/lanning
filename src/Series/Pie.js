@@ -70,11 +70,11 @@ export const Pie = ({
                 return (
                   <Arc
                     color={color}
-                    cornerRadius={cornerRadius}
+                    cornerRadius={cornerRadius * (data.length > 1)}
                     delay={delay + (duration / data.length) * index}
                     duration={duration / data.length}
                     endAngle={
-                      startAngle + size - (padAngle * data.length > 1) + OFFSET
+                      startAngle + size - padAngle * (data.length > 1) + OFFSET
                     }
                     height={height}
                     key={position}
