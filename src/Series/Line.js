@@ -18,7 +18,7 @@ export const Line = ({
   ...props
 }) => (
   <Serie {...props} data={raw.map((value, index) => [index, value])}>
-    {({ data, tooltip }) => {
+    {({ data, height, tooltip, width }) => {
       const points = data
         .map((value, index) => [...value, index])
         .filter(([, positionY], index) => {
@@ -40,6 +40,7 @@ export const Line = ({
             color={color}
             delay={delay}
             duration={duration / 2}
+            key={`${width},${height}`}
             opacity={0.2}
             points={data}
           />

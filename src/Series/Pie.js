@@ -77,7 +77,7 @@ export const Pie = ({
                       startAngle + size - padAngle * (data.length > 1) + OFFSET
                     }
                     height={height}
-                    key={position}
+                    key={`${position},${width}x${height}`}
                     onBlur={tooltip.close}
                     onFocus={handleTarget({
                       color,

@@ -1,4 +1,10 @@
-import React, { Component, createContext, useContext, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 // We want to include this little function in our own bundle
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -37,52 +43,47 @@ const useLayout = ({
   };
 };
 
-class Layout extends Component {
-  static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.node),
-      PropTypes.node,
-    ]),
-    height: PropTypes.number,
-    width: PropTypes.number,
-  };
+const calcSize = (components = [], isPilingUp = false) => {
+  return components.reduce(
+    (acc, component) => ({
+      height: isPilingUp
+        ? acc.height + component.height
+        : Math.max(acc.height, component.height),
+      width: isPilingUp
+        ? Math.max(acc.width, component.width)
+        : acc.width + component.width,
+    }),
+    { height: 0, width: 0 },
+  );
+};
 
-  static size(components = [], isPilingUp = false) {
-    return components.reduce(
-      (acc, component) => ({
-        height: isPilingUp
-          ? acc.height + component.height
-          : Math.max(acc.height, component.height),
-        width: isPilingUp
-          ? Math.max(acc.width, component.width)
-          : acc.width + component.width,
-      }),
-      { height: 0, width: 0 },
-    );
-  }
+const Layout = ({ children, height, width }) => {
+  const components = useRef({
+    bottom: {},
+    center: {},
+    left: {},
+    right: {},
+    top: {},
+  });
+  const [canvas, setCanvas] = useState({});
 
-  components = { bottom: {}, center: {}, left: {}, right: {}, top: {} };
+  const calculate = memoize(
+    cmp => {
+      const SVGHeight = height;
+      const SVGWidth = width;
 
-  state = {
-    canvas: {},
-  };
-
-  calculate = memoize(
-    components => {
-      const { height: SVGHeight, width: SVGWidth } = this.props;
-
-      const regions = Object.entries(components).reduce(
+      const regions = Object.entries(cmp).reduce(
         (acc, [position, componentMap]) => {
           const isStacking = position === 'bottom' || position === 'top';
 
           return {
             ...acc,
-            [position]: Layout.size(Object.values(componentMap), isStacking),
+            [position]: calcSize(Object.values(componentMap), isStacking),
           };
         },
         {},
       );
-      const { bottom, center, left, right, top } = components;
+      const { bottom, center, left, right, top } = cmp;
 
       return {
         ...Object.entries(bottom).reduce(
@@ -92,8 +93,7 @@ class Layout extends Component {
               height: size.height,
               width: SVGWidth - regions.left.width - regions.right.width,
               x: regions.left.width,
-              y: Layout.size(Object.values(bottom).slice(0, index), true)
-                .height,
+              y: calcSize(Object.values(bottom).slice(0, index), true).height,
             },
           }),
           {},
@@ -116,7 +116,7 @@ class Layout extends Component {
             [name]: {
               height: SVGHeight - regions.top.height - regions.bottom.height,
               width: size.width,
-              x: Layout.size(Object.values(left).slice(0, index), false).width,
+              x: calcSize(Object.values(left).slice(0, index), false).width,
               y: regions.bottom.height,
             },
           }),
@@ -131,7 +131,7 @@ class Layout extends Component {
               x:
                 SVGWidth -
                 size.width -
-                Layout.size(Object.values(right).slice(0, index), false).width,
+                calcSize(Object.values(right).slice(0, index), false).width,
               y: regions.bottom.height,
             },
           }),
@@ -147,7 +147,7 @@ class Layout extends Component {
               y:
                 SVGHeight -
                 size.height -
-                Layout.size(Object.values(top).slice(0, index), true).height,
+                calcSize(Object.values(top).slice(0, index), true).height,
             },
           }),
           {},
@@ -157,11 +157,11 @@ class Layout extends Component {
     (...argv) => JSON.stringify(argv),
   );
 
-  setComponentInPosition = ({ name, ...size }, position) => {
-    this.setState(() => {
-      const prevComponents = this.components;
+  const setComponentInPosition = ({ name, ...size }, position) => {
+    setCanvas(() => {
+      const prevComponents = components.current;
 
-      this.components = {
+      components.current = {
         ...prevComponents,
         [position]: {
           ...prevComponents[position],
@@ -169,20 +169,27 @@ class Layout extends Component {
         },
       };
 
-      return { canvas: this.calculate(this.components) };
+      return calculate(components.current);
     });
   };
 
-  render() {
-    const { setComponentInPosition } = this;
-    const { children } = this.props;
-    const { canvas } = this.state;
+  useEffect(() => {
+    setCanvas(calculate(components.current));
+  }, [height, width]);
 
-    return (
-      <Provider value={{ canvas, setComponentInPosition }}>{children}</Provider>
-    );
-  }
-}
+  return (
+    <Provider value={{ canvas, setComponentInPosition }}>{children}</Provider>
+  );
+};
+
+Layout.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  height: PropTypes.number,
+  width: PropTypes.number,
+};
 
 export { useLayout };
 
