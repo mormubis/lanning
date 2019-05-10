@@ -73,7 +73,9 @@ export const Pie = ({
                     cornerRadius={cornerRadius}
                     delay={delay + (duration / data.length) * index}
                     duration={duration / data.length}
-                    endAngle={startAngle + size - padAngle + OFFSET}
+                    endAngle={
+                      startAngle + size - (padAngle * data.length > 1) + OFFSET
+                    }
                     height={height}
                     key={position}
                     onBlur={tooltip.close}
