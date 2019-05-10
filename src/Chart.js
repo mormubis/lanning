@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  forwardRef,
   useCallback,
   useContext,
   useRef,
@@ -46,6 +47,7 @@ const useScale = ({ name, range }) => {
 const Chart = ({
   bottom = 0,
   children,
+  forwardedRef,
   height,
   left = 0,
   right = 0,
@@ -64,7 +66,7 @@ const Chart = ({
   }, []);
 
   return (
-    <SVG height={height} width={width} {...props}>
+    <SVG height={height} ref={forwardedRef} width={width} {...props}>
       <Layer transform={`scale(1, -1) translate(${left}, ${-height + bottom})`}>
         <Provider value={{ scales, setScale }}>
           <OverlayProvider value={id.current}>
@@ -85,6 +87,10 @@ Chart.propTypes = {
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  forwardedRef: PropTypes.oneOfType([
+    PropTypes.func,
+    PropTypes.shape({ current: PropTypes.instanceOf(Element) }),
+  ]),
   height: PropTypes.number.isRequired,
   left: PropTypes.number,
   right: PropTypes.number,
@@ -94,4 +100,6 @@ Chart.propTypes = {
 
 export { Context, useScale, useScales };
 
-export default Chart;
+export default forwardRef((props, ref) => (
+  <Chart {...props} forwardedRef={ref} />
+));

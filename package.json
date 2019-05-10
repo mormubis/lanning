@@ -1,7 +1,7 @@
 {
   "author": "Adrian de la Rosa <adrian@joinedapp.com>",
   "dependencies": {
-    "calvin-svg": "^2.1.6",
+    "calvin-svg": "^2.1.7",
     "d3": "^5.9.2",
     "random-color": "^1.0.1"
   },
