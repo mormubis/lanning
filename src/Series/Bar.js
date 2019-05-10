@@ -24,14 +24,14 @@ export const Bar = ({
 
   return (
     <Serie {...props} data={raw.map((value, index) => [index, value])}>
-      {({ data, tooltip }) => {
+      {({ data, height, tooltip, width }) => {
         return data.map(([position, size], index) => (
           <Shape
             color={color}
             delay={delay + ((duration / 2) * index) / (data.length - 1)}
             duration={duration / 2}
             height={size}
-            key={position}
+            key={`${position},${width}x${height}`}
             onBlur={tooltip.close}
             onFocus={handleTarget(tooltip, raw[index])}
             onMouseOut={tooltip.close}

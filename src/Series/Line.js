@@ -40,7 +40,7 @@ export const Line = ({
             color={color}
             delay={delay}
             duration={duration / 2}
-            key={`${width},${height}`}
+            key={`${width}x${height}`}
             opacity={0.2}
             points={data}
           />
@@ -49,7 +49,7 @@ export const Line = ({
               color={color}
               delay={delay + ((duration / 4) * index) / (data.length - 1)}
               duration={duration / 4}
-              key={x}
+              key={`${x},${width}x${height}`}
               onBlur={tooltip.close}
               onFocus={handleTarget(raw[index])}
               onMouseOut={tooltip.close}

@@ -71,6 +71,7 @@ export const Funnel = ({
                 curve={curve}
                 delay={delay}
                 duration={duration}
+                key={`${width}x${height}`}
                 points={mirrored}
                 x={0}
                 y={height / 2}
