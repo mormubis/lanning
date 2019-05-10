@@ -68,7 +68,10 @@ const Tooltip = ({ children, color, opacity, x: rawX = 0, y: rawY = 0 }) => {
 };
 
 Tooltip.propTypes = {
-  children: PropTypes.string,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
   color: PropTypes.string,
   opacity: PropTypes.number,
   x: PropTypes.number,
