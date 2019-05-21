@@ -42,7 +42,7 @@ const Grid = ({
   verticals = [...new Set(verticals)];
 
   return (
-    <Layer name="grid" x={x} y={y}>
+    <Layer label="grid" x={x} y={y}>
       {horizontals.map(row => (
         <Line
           color={color}

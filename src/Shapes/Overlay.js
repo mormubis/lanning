@@ -16,7 +16,7 @@ const Overlay = () => {
   const { x, y } = useLayout({ name: 'tooltip' });
   const id = useOverlay();
 
-  return <Layer id={id} pointerEvents="none" x={x} y={y} />;
+  return <Layer id={id} label="overlay" pointerEvents="none" x={x} y={y} />;
 };
 
 export { Context, useOverlay };
