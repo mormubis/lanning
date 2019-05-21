@@ -8,10 +8,20 @@ import { useOverlay } from './Overlay';
 import Text from './Text';
 
 const HEIGHT = 32;
-const OFFSET = { x: 20, y: 16 };
+const MARGIN = 12;
+const OFFSET = { left: 20, top: 16 };
 
-const Tooltip = ({ children, color, opacity, x: rawX = 0, y: rawY = 0 }) => {
-  const { height: maxHeight, width: maxWidth } = useLayout({ name: 'tooltip' });
+const Tooltip = ({
+  color,
+  message = '',
+  children = String(message),
+  opacity,
+  x: rawX = 0,
+  y: rawY = 0,
+}) => {
+  const { height: offsetHeight, width: offsetWidth } = useLayout({
+    name: 'tooltip',
+  });
   const id = useOverlay();
   const prevOpacity = useRef(opacity);
   const text = useRef(null);
@@ -30,15 +40,24 @@ const Tooltip = ({ children, color, opacity, x: rawX = 0, y: rawY = 0 }) => {
   }, [children]);
 
   useLayoutEffect(() => {
-    setX(Math.max(Math.min(maxWidth - width + OFFSET.x, rawX), OFFSET.x));
-  }, [maxWidth, rawX, width]);
+    setX(
+      Math.max(Math.min(offsetWidth - width + OFFSET.left, rawX), OFFSET.left),
+    );
+  }, [offsetWidth, rawX, width]);
 
   useLayoutEffect(() => {
-    setY(Math.max(Math.min(maxHeight - HEIGHT + OFFSET.y, rawY), OFFSET.y));
-  }, [maxHeight, rawY]);
+    setY(
+      Math.max(Math.min(offsetHeight - HEIGHT + OFFSET.top, rawY), OFFSET.top),
+    );
+  }, [offsetHeight, rawY]);
 
   return createPortal(
-    <Layer label="tooltip" opacity={opacity} x={x - OFFSET.x} y={y - OFFSET.y}>
+    <Layer
+      label="tooltip"
+      opacity={opacity}
+      x={x - OFFSET.left}
+      y={y - OFFSET.top}
+    >
       <Rect color="#222" height={HEIGHT} radius={4} width={width}>
         <Animation
           attribute="opacity"
@@ -49,15 +68,15 @@ const Tooltip = ({ children, color, opacity, x: rawX = 0, y: rawY = 0 }) => {
           to={opacity}
         />
       </Rect>
-      <Circle color={color} radius={4} x={OFFSET.x} y={OFFSET.y} />
+      <Circle color={color} radius={4} x={OFFSET.left} y={OFFSET.top} />
       {children !== undefined && (
         <Text
           color="#fff"
           fontSize={12}
           ref={text}
           verticalAlign="middle"
-          x={OFFSET.x + 12}
-          y={OFFSET.y}
+          x={OFFSET.left + MARGIN}
+          y={OFFSET.top}
         >
           {children}
         </Text>
