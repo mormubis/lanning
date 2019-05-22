@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Layer } from 'calvin-svg';
 import PropTypes from 'prop-types';
 // We want to include this little function in our own bundle
@@ -13,16 +13,13 @@ import Tick from './Tick';
 const MARGIN = 18;
 
 const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
-  const element = useRef(null);
   const [width, setWidth] = useState(defaultWidth);
 
-  useLayoutEffect(() => {
-    setTimeout(() => {
-      if (element.current) {
-        setWidth(Math.ceil(element.current.getBBox().width + MARGIN));
-      }
-    });
-  });
+  const handleResize = node => {
+    if (node) {
+      setWidth(Math.ceil(node.getBBox().width + MARGIN));
+    }
+  };
 
   const children = useCallback(
     memoize(
@@ -33,7 +30,7 @@ const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
           <Layer
             height={height}
             label="axis-vertical"
-            ref={element}
+            ref={handleResize}
             width={width}
             x={x}
             y={y}
