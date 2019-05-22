@@ -24,7 +24,7 @@ const useLayout = ({
   width = 0,
 }) => {
   if (!name) {
-    throw new Error('hello');
+    throw new Error('You provided a component without name, please use name');
   }
 
   const { canvas, setComponentInPosition } = useContext(Context);
@@ -174,7 +174,7 @@ const Layout = ({ children, height, width }) => {
   };
 
   useEffect(() => {
-    setCanvas(calculate(components.current));
+    setCanvas(() => calculate(components.current));
   }, [height, width]);
 
   return (
