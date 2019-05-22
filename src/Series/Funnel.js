@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { Rect } from 'calvin-svg';
 import PropTypes from 'prop-types';
 import randomColor from 'random-color';
@@ -30,13 +30,73 @@ export const Funnel = ({
   data: raw = [],
   delay = 0,
   duration = 3000,
-  tooltip: onTooltip = v => v,
+  tooltip: transform = (x, y) => y,
   ...props
 }) => {
   const steps = Array(raw.length)
     .fill(0)
     .map((ignore, index) => index);
   const target = raw[0] || 1;
+
+  const handleOver = useCallback(
+    ({ shape }, index, onOver) => {
+      const { height, width, x, y } = shape;
+
+      onOver({ color, index, transform, x: x + width / 2, y: y + height / 2 });
+    },
+    [color, transform],
+  );
+
+  const handleTarget = memoize((index, onOver) => (...argv) => {
+    handleOver(...argv, index, onOver);
+  });
+
+  const children = useCallback(
+    memoize(
+      ({ data, height, onOut, onOver, width }) => {
+        const areas = steps.length - 1;
+        const offset = height * 0.0125; // 2.5% of the height
+        const mirrored = mirror(data, offset, height);
+
+        return (
+          <>
+            <Area
+              color={color}
+              curve={curve}
+              delay={delay}
+              duration={duration}
+              key={`${width}x${height}`}
+              points={mirrored}
+              x={0}
+              y={height / 2}
+            />
+            {Array(areas)
+              .fill(0)
+              .map((ignore, area) => {
+                const key = `hover:${area}`;
+
+                return (
+                  <Rect
+                    color="transparent"
+                    height={height}
+                    key={key}
+                    onBlur={onOut}
+                    onFocus={handleTarget(area + 1, onOver)}
+                    onMouseOut={onOut}
+                    onMouseOver={handleTarget(area + 1, onOver)}
+                    width={width / areas}
+                    x={(width / areas) * area}
+                    y={0}
+                  />
+                );
+              })}
+          </>
+        );
+      },
+      (...argv) => JSON.stringify(argv),
+    ),
+    [color, delay, duration],
+  );
 
   return (
     <>
@@ -48,52 +108,7 @@ export const Funnel = ({
         data={raw.map((step, index) => [index, step])}
         scales={['steps', 'target']}
       >
-        {({ data, height, tooltip, width }) => {
-          const areas = steps.length - 1;
-          const offset = height * 0.0125; // 2.5% of the height
-          const mirrored = mirror(data, offset, height);
-
-          const handleTarget = memoize(value => ({ shape }) => {
-            const { height: areaHeight, width: areaWidth, x, y } = shape;
-
-            return tooltip.open({
-              color,
-              message: onTooltip(value),
-              x: x + areaWidth / 2,
-              y: y + areaHeight / 2,
-            });
-          });
-
-          return (
-            <>
-              <Area
-                color={color}
-                curve={curve}
-                delay={delay}
-                duration={duration}
-                key={`${width}x${height}`}
-                points={mirrored}
-                x={0}
-                y={height / 2}
-              />
-              {Array(areas)
-                .fill(0)
-                .map((ignore, area) => (
-                  <Rect
-                    color="transparent"
-                    height={height}
-                    onBlur={tooltip.close}
-                    onFocus={handleTarget(raw[area + 1])}
-                    onMouseOut={tooltip.close}
-                    onMouseOver={handleTarget(raw[area + 1])}
-                    width={width / areas}
-                    x={(width / areas) * area}
-                    y={0}
-                  />
-                ))}
-            </>
-          );
-        }}
+        {children}
       </Serie>
     </>
   );

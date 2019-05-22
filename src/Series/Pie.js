@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Layer } from 'calvin-svg';
 import randomColor from 'random-color';
@@ -20,7 +20,7 @@ export const Pie = ({
   duration = 3000,
   padAngle = 3,
   thickness = 8,
-  tooltip: onTooltip = v => v,
+  tooltip: transform = v => v,
   ...props
 }) => {
   const MAX = 360;
@@ -28,18 +28,70 @@ export const Pie = ({
 
   const total = raw.reduce((acc, slice) => acc + slice, 0);
 
-  const handleTarget = memoize(
-    ({ color, height, tooltip, width, value }) => ({ shape }) => {
-      const [x, y] = shape.centroid;
+  const handleOver = useCallback(
+    ({ shape }, index, onOver, width, height) => {
+      const { x, y } = shape;
 
-      return tooltip.open({
-        color,
-        message: onTooltip(value),
+      onOver({
+        color: colors[index],
+        index,
+        transform,
         x: -x + width / 2,
         y: y + height / 2,
       });
     },
-    (...argv) => JSON.stringify(argv),
+    [colors, transform],
+  );
+
+  const handleTarget = memoize((index, onOver, width, height) => (...argv) => {
+    handleOver(...argv, index, onOver, width, height);
+  });
+
+  const children = useCallback(
+    memoize(
+      ({ data, height, onOut, onOver, width }) => (
+        <Layer transform="scale(-1, 1)" x={width}>
+          {data
+            .map(([size]) => size)
+            .reduce((acc, size) => {
+              const last = acc[acc.length - 1] || [0, 0];
+              const sum = last[0] + last[1];
+
+              return [...acc, [size, sum]];
+            }, [])
+            .map(([size, startAngle], index) => {
+              const color = colors[index % colors.length];
+              // skipping linter (we do not have any other unmutable value
+              const position = index;
+
+              return (
+                <Arc
+                  color={color}
+                  cornerRadius={cornerRadius * (data.length > 1)}
+                  delay={delay + (duration / data.length) * index}
+                  duration={duration / data.length}
+                  endAngle={
+                    startAngle + size - padAngle * (data.length > 1) + OFFSET
+                  }
+                  height={height}
+                  key={`${position},${width}x${height}`}
+                  onBlur={onOut}
+                  onFocus={handleTarget(index, onOver, width, height)}
+                  onMouseOut={onOut}
+                  onMouseOver={handleTarget(index, onOver, width, height)}
+                  startAngle={startAngle + OFFSET}
+                  thickness={thickness}
+                  width={width}
+                  x={width / 2}
+                  y={height / 2}
+                />
+              );
+            })}
+        </Layer>
+      ),
+      (...argv) => JSON.stringify(argv),
+    ),
+    [colors, delay, duration],
   );
 
   return (
@@ -52,60 +104,7 @@ export const Pie = ({
         scales={['pie']}
         ranges={[MAX]}
       >
-        {({ data, height, tooltip, width }) => (
-          <Layer transform="scale(-1, 1)" x={width}>
-            {data
-              .map(([size]) => size)
-              .reduce((acc, size) => {
-                const last = acc[acc.length - 1] || [0, 0];
-                const sum = last[0] + last[1];
-
-                return [...acc, [size, sum]];
-              }, [])
-              .map(([size, startAngle], index) => {
-                const color = colors[index % colors.length];
-                // skipping linter (we do not have any other unmutable value
-                const position = index;
-
-                return (
-                  <Arc
-                    color={color}
-                    cornerRadius={cornerRadius * (data.length > 1)}
-                    delay={delay + (duration / data.length) * index}
-                    duration={duration / data.length}
-                    endAngle={
-                      startAngle + size - padAngle * (data.length > 1) + OFFSET
-                    }
-                    height={height}
-                    key={`${position},${width}x${height}`}
-                    onBlur={tooltip.close}
-                    onFocus={handleTarget({
-                      color,
-                      height,
-                      position,
-                      tooltip,
-                      width,
-                      value: raw[index],
-                    })}
-                    onMouseOut={tooltip.close}
-                    onMouseOver={handleTarget({
-                      color,
-                      height,
-                      position,
-                      tooltip,
-                      width,
-                      value: raw[index],
-                    })}
-                    startAngle={startAngle + OFFSET}
-                    thickness={thickness}
-                    width={width}
-                    x={width / 2}
-                    y={height / 2}
-                  />
-                );
-              })}
-          </Layer>
-        )}
+        {children}
       </Serie>
     </>
   );
