@@ -53,7 +53,7 @@ const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
               <Tick
                 color={color}
                 key={value}
-                stickTo={isInverted ? 'bottom' : 'top'}
+                stickTo={isInverted ? 'left' : 'right'}
                 x={isInverted ? MARGIN : width - MARGIN}
                 y={offset}
               >
