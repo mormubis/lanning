@@ -1,6 +1,9 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Layer } from 'calvin-svg';
 import PropTypes from 'prop-types';
+// We want to include this little function in our own bundle
+// eslint-disable-next-line import/no-extraneous-dependencies
+import memoize from 'underscore-es/memoize';
 
 import Text from '../Shapes/Text';
 
@@ -21,9 +24,9 @@ const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
     });
   });
 
-  return (
-    <Axis {...props} width={width}>
-      {({ height, label, position, ticks, x, y }) => {
+  const children = useCallback(
+    memoize(
+      ({ height, label, position, ticks, x, y }) => {
         const isInverted = position === 'right';
 
         return (
@@ -59,7 +62,15 @@ const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
             ))}
           </Layer>
         );
-      }}
+      },
+      (...argv) => JSON.stringify(argv),
+    ),
+    [color, width],
+  );
+
+  return (
+    <Axis {...props} width={width}>
+      {children}
     </Axis>
   );
 };
