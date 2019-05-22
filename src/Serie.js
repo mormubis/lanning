@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Layer } from 'calvin-svg';
@@ -10,58 +10,81 @@ import Tooltip from './Shapes/Tooltip';
 const Serie = ({
   children = () => {},
   data: raw = [],
-  ranges = [],
+  left = 0,
+  ranges: rawRanges,
   scales: scaleNames = [],
   name = scaleNames.join(','),
+  top = 0,
   ...rest
 }) => {
-  const { height, width, x, y } = useLayout({ ...rest, name });
-  const scales = useScales({
-    ranges: ranges.length > 0 ? ranges : [width, height],
-    scales: scaleNames,
+  const { height, width, x: offsetLeft, y: offsetTop } = useLayout({
+    ...rest,
+    left,
+    name,
+    top,
   });
+  const ranges = (rawRanges || []).length > 0 ? rawRanges : [width, height];
+  const scales = useScales({ ranges, scales: scaleNames });
 
   const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [tooltip, setTooltip] = useState({});
 
-  const dimensions = raw[0].length;
-
-  const closeTooltip = useCallback(() => {
+  const onOut = useCallback(() => {
     setTooltipVisible(false);
   }, []);
 
-  const openTooltip = useCallback(
-    ({ color, message, x: tooltipX, y: tooltipY }) => {
+  const onOver = useCallback(
+    ({ color, index, transform, x, y }) => {
       setTooltipVisible(true);
-      setTooltip({ color, message, x: x + tooltipX, y: y + tooltipY });
+      setTooltip({
+        color,
+        message: transform(
+          ...raw[index].map((coordinate, rindex) => {
+            const scale = scales[rindex];
+            const domain = scale.domain();
+            const mapped = scale(coordinate);
+
+            return mapped !== undefined ? mapped : scale(domain[coordinate]);
+          }),
+          index,
+        ),
+        x: left + x,
+        y: top + y,
+      });
     },
-    [],
+    [scales],
   );
 
-  if (scales.length !== dimensions) {
+  const dimensions = raw[0].length;
+
+  if (
+    raw.length === 0 ||
+    scales.length !== dimensions ||
+    ranges.filter(Boolean).length !== dimensions
+  ) {
     return null;
   }
 
-  const data = raw.map(datum =>
-    datum.map((value, index) => {
-      const domain = scales[index].domain();
-      const mapped = scales[index](value);
+  const data = raw.map(axis =>
+    axis.map((coordinate, index) => {
+      const scale = scales[index];
+      const domain = scale.domain();
+      const mapped = scale(coordinate);
 
-      return mapped !== undefined ? mapped : scales[index](domain[value]);
+      return mapped !== undefined ? mapped : scale(domain[coordinate]);
     }),
   );
 
   return (
-    <Layer height={height} width={width} x={x} y={y}>
-      {children({
-        data,
-        height,
-        tooltip: { close: closeTooltip, open: openTooltip },
-        width,
-      })}
-      <Tooltip opacity={isTooltipVisible ? 1 : 0} {...tooltip}>
-        {tooltip.message}
-      </Tooltip>
+    <Layer
+      height={height}
+      label={name}
+      width={width}
+      x={offsetLeft}
+      y={offsetTop}
+    >
+      {children({ data, height, onOut, onOver, width })}
+      <Tooltip opacity={isTooltipVisible ? 1 : 0} {...tooltip} />
     </Layer>
   );
 };
@@ -75,9 +98,11 @@ Serie.propTypes = {
       PropTypes.number,
     ]),
   ),
+  left: PropTypes.number,
   name: PropTypes.string,
   ranges: PropTypes.arrayOf(PropTypes.number),
   scales: PropTypes.arrayOf(PropTypes.string),
+  top: PropTypes.number,
 };
 
-export default Serie;
+export default memo(Serie);
