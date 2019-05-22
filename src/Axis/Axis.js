@@ -27,21 +27,15 @@ const useDomain = ({ data, from, to, values }) => {
   }, [data, from, to, values]);
 };
 
-const useOrientation = ({ horizontal, vertical }) => {
-  return useMemo(() => {
-    return horizontal ? 'horizontal' : 'vertical';
-  }, [horizontal, vertical]);
-};
-
 const usePosition = ({ bottom, left, right, top }) => {
   return useMemo(() => {
     switch (true) {
-      case bottom:
-        return 'bottom';
       case right:
         return 'right';
       case top:
         return 'top';
+      case bottom:
+        return 'bottom';
       case left:
       default:
         return 'left';
@@ -49,27 +43,42 @@ const usePosition = ({ bottom, left, right, top }) => {
   }, [bottom, left, right, top]);
 };
 
-const Axis = ({ children, name, ticks: nTicks, type, unit, ...rest }) => {
+const Axis = ({
+  children,
+  label: rawLabel,
+  name,
+  tickFormat = v => v,
+  ticks: nTicks,
+  type,
+  unit: rawUnit = '',
+  ...rest
+}) => {
   const domain = useDomain(rest);
   const position = usePosition(rest);
-  const orientation = useOrientation({
-    horizontal: position === 'left' || position === 'right',
-    vertical: position === 'bottom' || position === 'top',
-  });
-  const isHorizontal = orientation === 'horizontal';
+
+  const isHorizontal = position === 'bottom' || position === 'top';
 
   const { height, width, x, y } = useLayout({ name, position, ...rest });
   const scale = useScale({ name, range: isHorizontal ? width : height });
 
+  const unit = rawUnit && `(${rawUnit})`;
+  const label = rawLabel ? `${rawLabel} ${unit}` : unit;
+
   if (!scale) {
-    return null;
+    return (
+      <Scale
+        domain={domain}
+        key={name}
+        name={name}
+        ticks={nTicks}
+        type={type}
+      />
+    );
   }
 
-  const ticks = scale.ticks(nTicks);
-
-  const inverted =
-    (isHorizontal && position === 'top') ||
-    (!isHorizontal && position === 'left');
+  const ticks = (scale.ticks ? scale.ticks(nTicks) : scale.domain()).map(
+    tick => ({ label: tickFormat(tick), offset: scale(tick), value: tick }),
+  );
 
   return (
     <>
@@ -82,13 +91,10 @@ const Axis = ({ children, name, ticks: nTicks, type, unit, ...rest }) => {
       />
       {children({
         height,
-        inverted,
+        label,
         name,
-        orientation,
         position,
-        scale,
         ticks,
-        unit,
         width,
         x,
         y,
@@ -99,7 +105,9 @@ const Axis = ({ children, name, ticks: nTicks, type, unit, ...rest }) => {
 
 Axis.propTypes = {
   children: PropTypes.func.isRequired,
+  label: PropTypes.string,
   name: PropTypes.string.isRequired,
+  tickFormat: PropTypes.func,
   ticks: PropTypes.number,
   type: PropTypes.oneOf(Object.keys(Scales)),
   unit: PropTypes.string,
