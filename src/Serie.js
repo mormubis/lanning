@@ -44,7 +44,7 @@ const Serie = ({
             const domain = scale.domain();
             const mapped = scale(coordinate);
 
-            return mapped !== undefined ? mapped : scale(domain[coordinate]);
+            return mapped !== undefined ? coordinate : domain[coordinate];
           }),
           index,
         ),
