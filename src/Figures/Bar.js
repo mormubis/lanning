@@ -11,6 +11,7 @@ function Bar({
   opacity: defaultOpacity = 1,
   radius = 4,
   width = 8,
+  x,
   ...props
 }) {
   const prevHeight = useRef(0);
@@ -20,7 +21,14 @@ function Bar({
   }, [height]);
 
   return (
-    <Rect height={height} opacity={0} radius={radius} width={width} {...props}>
+    <Rect
+      height={height}
+      opacity={0}
+      radius={radius}
+      width={width}
+      x={x - width / 2}
+      {...props}
+    >
       <Animation
         attribute="height"
         delay={delay}
@@ -56,6 +64,7 @@ Bar.propTypes = {
   opacity: PropTypes.number,
   radius: PropTypes.number,
   width: PropTypes.number,
+  x: PropTypes.number,
 };
 
 export default memo(Bar);
