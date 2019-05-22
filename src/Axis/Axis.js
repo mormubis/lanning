@@ -77,7 +77,11 @@ const Axis = ({
   }
 
   const ticks = (scale.ticks ? scale.ticks(nTicks) : scale.domain()).map(
-    tick => ({ label: tickFormat(tick), offset: scale(tick), value: tick }),
+    (tick, index) => ({
+      label: tickFormat(tick, index),
+      offset: scale(tick),
+      value: tick,
+    }),
   );
 
   return (
