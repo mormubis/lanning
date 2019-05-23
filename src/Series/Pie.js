@@ -30,7 +30,7 @@ export const Pie = ({
 
   const handleOver = useCallback(
     ({ shape }, index, onOver, width, height) => {
-      const { x, y } = shape;
+      const [x, y] = shape.centroid;
 
       onOver({
         color: colors[index],
