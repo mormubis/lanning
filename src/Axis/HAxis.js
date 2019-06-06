@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Layer } from 'calvin-svg';
 import PropTypes from 'prop-types';
 // We want to include this little function in our own bundle
@@ -11,13 +11,20 @@ import Axis from './Axis';
 import Tick from './Tick';
 
 const MARGIN = 10;
+const THRESHOLD = 0.05;
 
 const HAxis = ({ color, height: defaultHeight = 25, ...props }) => {
+  const lastSize = useRef(0);
   const [height, setHeight] = useState(defaultHeight);
 
   const handleResize = node => {
     if (node) {
-      setHeight(Math.ceil(node.getBBox().height + MARGIN));
+      const size = Math.ceil(node.getBBox().height + MARGIN);
+
+      if (Math.abs(lastSize.current - size) > size * THRESHOLD) {
+        lastSize.current = size;
+        setHeight(size);
+      }
     }
   };
 

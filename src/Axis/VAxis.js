@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Layer } from 'calvin-svg';
 import PropTypes from 'prop-types';
 // We want to include this little function in our own bundle
@@ -11,13 +11,20 @@ import Axis from './Axis';
 import Tick from './Tick';
 
 const MARGIN = 18;
+const THRESHOLD = 0.05;
 
 const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
+  const lastSize = useRef(0);
   const [width, setWidth] = useState(defaultWidth);
 
   const handleResize = node => {
     if (node) {
-      setWidth(Math.ceil(node.getBBox().width + MARGIN));
+      const size = Math.ceil(node.getBBox().width + MARGIN);
+
+      if (Math.abs(lastSize.current - size) > size * THRESHOLD) {
+        lastSize.current = size;
+        setWidth(size);
+      }
     }
   };
 
@@ -38,7 +45,7 @@ const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
             {label && (
               <Text
                 color={color}
-                textAlign="right"
+                textAlign={isInverted ? 'left' : 'right'}
                 verticalAlign="baseline"
                 x={isInverted ? MARGIN : width - MARGIN}
                 y={height + MARGIN}
