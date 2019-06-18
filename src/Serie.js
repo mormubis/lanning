@@ -55,7 +55,7 @@ const Serie = ({
     [scales],
   );
 
-  const dimensions = raw[0].length;
+  const dimensions = (raw[0] || []).length;
 
   if (
     raw.length === 0 ||
