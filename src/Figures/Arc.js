@@ -62,7 +62,7 @@ const Arc = ({
         duration={50}
         fill="freeze"
         from={0}
-        maxCount={1}
+        one
         to={defaultOpacity}
       />
       {children}
