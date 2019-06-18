@@ -16,7 +16,7 @@ const useDomain = ({ data, from, to, values }) => {
         domain = values;
         break;
       case from !== undefined && to !== undefined:
-        domain = [from, to];
+        domain = [from, to === from ? from + 1 : to];
         break;
       default:
         domain = data && extent(data);
