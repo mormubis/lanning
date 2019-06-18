@@ -61,8 +61,8 @@ const Axis = ({
   const { height, width, x, y } = useLayout({ name, position, ...rest });
   const scale = useScale({ name, range: isHorizontal ? width : height });
 
-  const unit = rawUnit && `(${rawUnit})`;
-  const label = rawLabel ? `${rawLabel} ${unit}` : unit;
+  const unit = rawUnit && (rawLabel ? ` (${rawUnit})` : rawUnit);
+  const label = rawLabel ? `${rawLabel}${unit}` : unit;
 
   if (!scale) {
     return (
