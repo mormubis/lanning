@@ -34,7 +34,7 @@ export const Point = ({
         ease="bounce-out"
         fill="freeze"
         from={0}
-        one
+        once
         to={radius}
       />
       <Animation

@@ -46,7 +46,7 @@ const Line = ({
         duration={duration}
         ease={ease}
         from={length}
-        one
+        once
         strokeLinecap="round"
         strokeLinejoin="round"
         to={0}

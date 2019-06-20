@@ -44,7 +44,7 @@ function Bar({
         duration={50}
         fill="freeze"
         from={0}
-        one
+        once
         to={defaultOpacity}
       />
       {children}
