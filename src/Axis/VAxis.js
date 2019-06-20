@@ -5,12 +5,10 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import memoize from 'underscore-es/memoize';
 
-import Text from '../Shapes/Text';
-
 import Axis from './Axis';
 import Tick from './Tick';
 
-const MARGIN = 18;
+const MARGIN = 12;
 const THRESHOLD = 0.05;
 
 const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
@@ -30,7 +28,7 @@ const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
 
   const children = useCallback(
     memoize(
-      ({ height, label, position, ticks, x, y }) => {
+      ({ height, position, ticks, x, y }) => {
         const isInverted = position === 'right';
 
         return (
@@ -42,26 +40,15 @@ const VAxis = ({ color, width: defaultWidth = 25, ...props }) => {
             x={x}
             y={y}
           >
-            {label && (
-              <Text
-                color={color}
-                textAlign={isInverted ? 'left' : 'right'}
-                verticalAlign="baseline"
-                x={isInverted ? MARGIN : width - MARGIN}
-                y={height + MARGIN}
-              >
-                {label}
-              </Text>
-            )}
-            {ticks.map(({ label: tickLabel, offset, value }) => (
+            {ticks.map(({ label, offset, value }) => (
               <Tick
                 color={color}
                 key={value}
-                stickTo={isInverted ? 'left' : 'right'}
-                x={isInverted ? MARGIN : width - MARGIN}
+                stickTo={isInverted ? 'right' : 'left'}
+                x={isInverted ? width - MARGIN / 3 : MARGIN / 3}
                 y={offset}
               >
-                {tickLabel}
+                {label}
               </Tick>
             ))}
           </Layer>

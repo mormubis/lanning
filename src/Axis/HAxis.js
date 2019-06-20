@@ -5,8 +5,6 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import memoize from 'underscore-es/memoize';
 
-import Text from '../Shapes/Text';
-
 import Axis from './Axis';
 import Tick from './Tick';
 
@@ -30,7 +28,7 @@ const HAxis = ({ color, height: defaultHeight = 25, ...props }) => {
 
   const children = useCallback(
     memoize(
-      ({ label, position, ticks, width, x, y }) => {
+      ({ position, ticks, width, x, y }) => {
         const isInverted = position === 'top';
 
         return (
@@ -42,18 +40,7 @@ const HAxis = ({ color, height: defaultHeight = 25, ...props }) => {
             x={x}
             y={y}
           >
-            {label && (
-              <Text
-                color={color}
-                textAlign="right"
-                verticalAlign="baseline"
-                x={width}
-                y={isInverted ? MARGIN : height - MARGIN}
-              >
-                {label}
-              </Text>
-            )}
-            {ticks.map(({ label: tickLabel, offset, value }) => (
+            {ticks.map(({ label, offset, value }) => (
               <Tick
                 color={color}
                 key={value}
@@ -61,7 +48,7 @@ const HAxis = ({ color, height: defaultHeight = 25, ...props }) => {
                 x={offset}
                 y={isInverted ? MARGIN : height - MARGIN}
               >
-                {tickLabel}
+                {label}
               </Tick>
             ))}
           </Layer>
