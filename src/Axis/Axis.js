@@ -45,12 +45,10 @@ const usePosition = ({ bottom, left, right, top }) => {
 
 const Axis = ({
   children,
-  label: rawLabel,
   name,
   tickFormat = v => v,
   ticks: nTicks,
   type,
-  unit: rawUnit = '',
   ...rest
 }) => {
   const domain = useDomain(rest);
@@ -60,9 +58,6 @@ const Axis = ({
 
   const { height, width, x, y } = useLayout({ name, position, ...rest });
   const scale = useScale({ name, range: isHorizontal ? width : height });
-
-  const unit = rawUnit && (rawLabel ? ` (${rawUnit})` : rawUnit);
-  const label = rawLabel ? `${rawLabel}${unit}` : unit;
 
   if (!scale) {
     return (
@@ -95,7 +90,6 @@ const Axis = ({
       />
       {children({
         height,
-        label,
         name,
         position,
         ticks,
@@ -109,12 +103,10 @@ const Axis = ({
 
 Axis.propTypes = {
   children: PropTypes.func.isRequired,
-  label: PropTypes.string,
   name: PropTypes.string.isRequired,
   tickFormat: PropTypes.func,
   ticks: PropTypes.number,
   type: PropTypes.oneOf(Object.keys(Scales)),
-  unit: PropTypes.string,
 };
 
 export { useDomain };
