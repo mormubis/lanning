@@ -8,6 +8,10 @@ import Scales from './Scales';
 function tickStep(start, stop, ticks) {
   const step = d3tickStep(start, stop, ticks);
 
+  if (Number.isNaN(step)) {
+    return 0;
+  }
+
   if (Math.ceil((stop - start) / step) !== ticks) {
     return tickStep(start, stop + step, ticks);
   }
