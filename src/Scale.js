@@ -1,9 +1,19 @@
 import { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { tickStep } from 'd3';
+import { tickStep as d3tickStep } from 'd3';
 
 import { Context } from './Chart';
 import Scales from './Scales';
+
+function tickStep(start, stop, ticks) {
+  const step = d3tickStep(start, stop, ticks);
+
+  if (Math.ceil((stop - start) / step) !== ticks) {
+    return tickStep(start, stop + step, ticks);
+  }
+
+  return step;
+}
 
 const Scale = ({ domain = [], name, ticks = 2, type }) => {
   const { setScale } = useContext(Context);
@@ -18,7 +28,7 @@ const Scale = ({ domain = [], name, ticks = 2, type }) => {
       const [start, stop] = domain;
       const step = tickStep(start, stop, ticks);
 
-      fixed = [start, Math.ceil(stop / step) * step];
+      fixed = [start, start + step * ticks];
     }
 
     const scale = Type();
