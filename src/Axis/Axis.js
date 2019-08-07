@@ -46,6 +46,7 @@ const usePosition = ({ bottom, left, right, top }) => {
 const Axis = ({
   children,
   name,
+  padding,
   tickFormat = v => v,
   ticks: nTicks,
   type,
@@ -56,7 +57,12 @@ const Axis = ({
 
   const isHorizontal = position === 'bottom' || position === 'top';
 
-  const { height, width, x, y } = useLayout({ name, position, ...rest });
+  const { height, width, x, y } = useLayout({
+    name,
+    position,
+    ...rest,
+    ...padding,
+  });
   const scale = useScale({ name, range: isHorizontal ? width : height });
 
   if (!scale) {
@@ -104,6 +110,12 @@ const Axis = ({
 Axis.propTypes = {
   children: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+  padding: PropTypes.shape({
+    bottom: PropTypes.number,
+    left: PropTypes.number,
+    right: PropTypes.number,
+    top: PropTypes.number,
+  }),
   tickFormat: PropTypes.func,
   ticks: PropTypes.number,
   type: PropTypes.oneOf(Object.keys(Scales)),
