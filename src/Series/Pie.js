@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Layer } from 'calvin-svg';
-import randomColor from 'random-color';
+import randomColor from 'randomcolor';
 // We want to include this little function in our own bundle
 // eslint-disable-next-line import/no-extraneous-dependencies
 import memoize from 'underscore-es/memoize';
@@ -12,9 +12,7 @@ import Serie from '../Serie';
 
 export const Pie = ({
   data: raw = [],
-  colors = Array(raw.length)
-    .fill(0)
-    .map(() => randomColor().hexString()),
+  colors = new Array(raw.length).fill(0).map(() => randomColor()),
   cornerRadius = 4,
   delay = 0,
   duration = 3000,

@@ -1,7 +1,7 @@
 import React, { memo, useCallback } from 'react';
 import { Rect } from 'calvin-svg';
 import PropTypes from 'prop-types';
-import randomColor from 'random-color';
+import randomColor from 'randomcolor';
 // We want to include this little function in our own bundle
 // eslint-disable-next-line import/no-extraneous-dependencies
 import memoize from 'underscore-es/memoize';
@@ -25,7 +25,7 @@ const mirror = memoize(
 );
 
 export const Funnel = ({
-  color = randomColor().hexString(),
+  color = randomColor(),
   curve = 'monotone-x',
   data: raw = [],
   delay = 0,
@@ -33,9 +33,7 @@ export const Funnel = ({
   tooltip: transform = (x, y) => y,
   ...props
 }) => {
-  const steps = Array(raw.length)
-    .fill(0)
-    .map((ignore, index) => index);
+  const steps = new Array(raw.length).fill(0).map((ignore, index) => index);
   const target = raw[0] || 1;
 
   const handleOver = useCallback(
@@ -70,26 +68,24 @@ export const Funnel = ({
               x={0}
               y={height / 2}
             />
-            {Array(areas)
-              .fill(0)
-              .map((ignore, area) => {
-                const key = `hover:${area}`;
+            {new Array(areas).fill(0).map((ignore, area) => {
+              const key = `hover:${area}`;
 
-                return (
-                  <Rect
-                    color="transparent"
-                    height={height}
-                    key={key}
-                    onBlur={onOut}
-                    onFocus={handleTarget(area + 1, onOver)}
-                    onMouseOut={onOut}
-                    onMouseOver={handleTarget(area + 1, onOver)}
-                    width={width / areas}
-                    x={(width / areas) * area}
-                    y={0}
-                  />
-                );
-              })}
+              return (
+                <Rect
+                  color="transparent"
+                  height={height}
+                  key={key}
+                  onBlur={onOut}
+                  onFocus={handleTarget(area + 1, onOver)}
+                  onMouseOut={onOut}
+                  onMouseOver={handleTarget(area + 1, onOver)}
+                  width={width / areas}
+                  x={(width / areas) * area}
+                  y={0}
+                />
+              );
+            })}
           </>
         );
       },

@@ -1,6 +1,6 @@
 import React, { memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import randomColor from 'random-color';
+import randomColor from 'randomcolor';
 // We want to include this little function in our own bundle
 // eslint-disable-next-line import/no-extraneous-dependencies
 import memoize from 'underscore-es/memoize';
@@ -9,7 +9,7 @@ import Shape from '../Figures/Bar';
 import Serie from '../Serie';
 
 export const Bar = ({
-  color = randomColor().hexString(),
+  color = randomColor(),
   data: raw = [],
   delay = 0,
   duration = 3000,
