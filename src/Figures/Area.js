@@ -12,11 +12,10 @@ const Area = ({
   ...props
 }) => {
   const prevPoints = useRef(points.map(([x]) => [x, 0, 0]));
-  const hash = JSON.stringify(points);
 
   useEffect(() => {
     prevPoints.current = points;
-  }, [hash]);
+  }, [JSON.stringify(points)]);
 
   return (
     <Shape curve={curve} points={[]} {...props}>
