@@ -1,12 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Layer } from 'calvin-svg';
 import PropTypes from 'prop-types';
-// We want to include this little function in our own bundle
-// eslint-disable-next-line import/no-extraneous-dependencies
-import memoize from 'underscore-es/memoize';
 
 import Axis from './Axis';
 import Tick from './Tick';
+import { memoize } from '../utils';
 
 const MARGIN = 12;
 const THRESHOLD = 0.05;

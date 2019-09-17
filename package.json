@@ -4,7 +4,6 @@
     "calvin-svg": "^2.2.4",
     "d3": "^5.12.0",
     "randomcolor": "^0.5.4",
-    "underscore-es": "^1.9.8",
     "uuid": "^3.3.3"
   },
   "description": "Build charts in React (with some 🍬!!!)",

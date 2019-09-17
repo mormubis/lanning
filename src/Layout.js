@@ -6,9 +6,8 @@ import React, {
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
-// We want to include this little function in our own bundle
-// eslint-disable-next-line import/no-extraneous-dependencies
-import memoize from 'underscore-es/memoize';
+
+import { memoize } from './utils';
 
 const Context = createContext({});
 const { Provider } = Context;

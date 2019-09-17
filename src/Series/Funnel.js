@@ -2,13 +2,11 @@ import React, { memo, useCallback } from 'react';
 import { Rect } from 'calvin-svg';
 import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
-// We want to include this little function in our own bundle
-// eslint-disable-next-line import/no-extraneous-dependencies
-import memoize from 'underscore-es/memoize';
 
 import Area from '../Figures/Area';
 import Serie from '../Serie';
 import Scale from '../Scale';
+import { memoize } from '../utils';
 
 const mirror = memoize(
   (data = [], offset, height) => {
