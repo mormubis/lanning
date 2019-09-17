@@ -23,12 +23,12 @@ const Grid = ({
     rows ? (height - top - bottom) / rows : height,
   ];
 
-  let horizontals = Array(rows ? rows + 1 : 0)
+  let horizontals = new Array(rows ? rows + 1 : 0)
     .fill(0)
     .map((ignore, index) => index)
     .map(row => row * gap[1] + top);
 
-  let verticals = Array(columns ? columns + 1 : 0)
+  let verticals = new Array(columns ? columns + 1 : 0)
     .fill(0)
     .map((ignore, index) => index)
     .map(column => column * gap[0] + left);
