@@ -3,13 +3,9 @@
     "browser": true,
     "jest": true
   },
-  "extends": [
-    "canonical",
-    "airbnb",
-    "prettier",
-    "prettier/react"
-  ],
+  "extends": ["canonical", "airbnb", "prettier", "prettier/react"],
   "parser": "babel-eslint",
+  "plugins": ["react-hooks"],
   "settings": {
     "react": {
       "version": "16.8"
@@ -38,6 +34,7 @@
     "react/jsx-props-no-spreading": "off",
     "react/no-did-update-set-state": "off",
     "react/require-default-props": "off",
+    "unicorn/prefer-query-selector": "off",
     "unicorn/prevent-abbreviations": "off"
   }
 }
