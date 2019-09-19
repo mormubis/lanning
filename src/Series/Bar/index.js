@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
-import Chart from './Chart';
 import Serie from '../../Serie';
 import { memoize } from '../../utils';
+import Chart from './Chart';
 
-export const Line = ({
+export const Bar = ({
   color,
   data: domain = [],
   delay,
@@ -36,7 +36,7 @@ export const Line = ({
   );
 };
 
-Line.propTypes = {
+Bar.propTypes = {
   color: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.number),
   delay: PropTypes.number,
@@ -44,4 +44,4 @@ Line.propTypes = {
   tooltip: PropTypes.func,
 };
 
-export default Line;
+export default memo(Bar);

@@ -32,7 +32,7 @@ const Funnel = ({
         ),
         (...argv) => JSON.stringify(argv),
       ),
-    [color, curve, delay, duration],
+    [color, curve, delay, JSON.stringify(domain), duration],
   );
 
   return (

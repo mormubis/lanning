@@ -1,9 +1,8 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
 import randomColor from 'randomcolor';
+import PropTypes from 'prop-types';
 
-import Line from '../../Figures/Line';
-import Point from '../../Figures/Point';
+import Bar from '../../Figures/Bar';
 import { memoize } from '../../utils';
 
 const Chart = ({
@@ -18,19 +17,11 @@ const Chart = ({
   range = [],
   width,
 }) => {
-  // Points of Interest
-  const poi = range
-    .map((value, index) => [...value, index])
-    .filter(([, positionY], index) => {
-      const [, previousY] = range[index - 1] || [];
-      const [, nextY] = range[index + 1] || [];
-
-      return previousY !== positionY || nextY !== positionY;
-    });
-
   const handleOver = useCallback(
     ({ shape }, index) => {
-      const { x, y } = shape;
+      const {
+        centroid: [x, y],
+      } = shape;
 
       onOver({
         color,
@@ -48,32 +39,21 @@ const Chart = ({
     [handleOver],
   );
 
-  return (
-    <>
-      <Line
-        color={color}
-        delay={delay}
-        duration={duration / 2}
-        key={`${width}x${height}`}
-        opacity={0.2}
-        points={range}
-      />
-      {poi.map(([x, y, index]) => (
-        <Point
-          color={color}
-          delay={delay + ((duration / 4) * index) / (domain.length - 1)}
-          duration={duration / 4}
-          key={`${x},${width}x${height}`}
-          onBlur={onOut}
-          onFocus={createOverHandler(index)}
-          onMouseOut={onOut}
-          onMouseOver={createOverHandler(index)}
-          x={x}
-          y={y}
-        />
-      ))}
-    </>
-  );
+  return range.map(([position, size], index) => (
+    <Bar
+      color={color}
+      delay={delay + ((duration / 2) * index) / (domain.length - 1)}
+      duration={duration / 2}
+      height={size}
+      key={`${position},${width}x${height}`}
+      onBlur={onOut}
+      onFocus={createOverHandler(index)}
+      onMouseOut={onOut}
+      onMouseOver={createOverHandler(index)}
+      x={position}
+      y={0}
+    />
+  ));
 };
 
 Chart.propTypes = {

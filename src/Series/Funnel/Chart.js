@@ -45,7 +45,7 @@ const Chart = ({
 
       onTooltip({ color, index, x: centroid[0] + x, y: centroid[1] + y });
     },
-    [JSON.stringify(domain)],
+    [onOver, onTooltip],
   );
 
   const createOverHandler = useMemo(
