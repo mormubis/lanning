@@ -1,11 +1,10 @@
 import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
+import Chart from './Chart';
 import Serie from '../../Serie';
 import Scale from '../../Scale';
 import { memoize } from '../../utils';
-
-import Chart from './Chart';
 
 const Funnel = ({
   color,

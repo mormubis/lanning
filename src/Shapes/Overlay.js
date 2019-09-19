@@ -13,7 +13,7 @@ const useOverlay = () => {
 };
 
 const Overlay = () => {
-  const { x, y } = useLayout({ name: 'tooltip' });
+  const { x, y } = useLayout({ name: 'tooltip', position: 'overlay' });
   const id = useOverlay();
 
   return <Layer id={id} label="overlay" pointerEvents="none" x={x} y={y} />;

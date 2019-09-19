@@ -61,6 +61,7 @@ const Layout = ({ children, height, width }) => {
     bottom: {},
     center: {},
     left: {},
+    overlay: {},
     right: {},
     top: {},
   });
@@ -82,7 +83,7 @@ const Layout = ({ children, height, width }) => {
         },
         {},
       );
-      const { bottom, center, left, right, top } = cmp;
+      const { bottom, center, left, overlay, right, top } = cmp;
 
       return {
         ...Object.entries(bottom).reduce(
@@ -117,6 +118,18 @@ const Layout = ({ children, height, width }) => {
               width: size.width,
               x: calcSize(Object.values(left).slice(0, index), false).width,
               y: regions.bottom.height,
+            },
+          }),
+          {},
+        ),
+        ...Object.entries(overlay).reduce(
+          (acc, [name]) => ({
+            ...acc,
+            [name]: {
+              height: SVGHeight,
+              width: SVGWidth,
+              x: 0,
+              y: 0,
             },
           }),
           {},

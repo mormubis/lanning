@@ -9,7 +9,8 @@ import Tooltip from './Shapes/Tooltip';
 
 const Serie = ({
   children = () => {},
-  data: domain = [],
+  data: raw = [],
+  domain = raw,
   ranges: defaultRanges = [],
   scales: scaleNames = [],
   name = scaleNames.join(','),
@@ -72,7 +73,7 @@ const Serie = ({
       const scale = scales[index];
       const mapped = scale(coordinate);
 
-      return mapped !== undefined ? mapped : scale.domain()[coordinate];
+      return mapped !== undefined ? mapped : scale(scale.domain()[coordinate]);
     }),
   );
 
@@ -95,6 +96,12 @@ const Serie = ({
 Serie.propTypes = {
   children: PropTypes.func,
   data: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.arrayOf(PropTypes.number),
+      PropTypes.number,
+    ]),
+  ),
+  domain: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.number),
       PropTypes.number,
