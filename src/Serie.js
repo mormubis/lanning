@@ -9,81 +9,84 @@ import Tooltip from './Shapes/Tooltip';
 
 const Serie = ({
   children = () => {},
-  data: raw = [],
-  left = 0,
-  ranges: rawRanges,
+  data: domain = [],
+  ranges: defaultRanges = [],
   scales: scaleNames = [],
   name = scaleNames.join(','),
-  top = 0,
+  onOut = () => {},
+  onOver = () => {},
+  padding,
+  tooltip: transform = (_, v) => v,
+  tooltipMessage = transform,
   ...rest
 }) => {
-  const { height, width, x: offsetLeft, y: offsetTop } = useLayout({
-    ...rest,
-    left,
-    name,
-    top,
-  });
-  const ranges = (rawRanges || []).length > 0 ? rawRanges : [width, height];
+  const { height, width, x, y } = useLayout({ ...rest, ...padding, name });
+  const ranges = defaultRanges.length > 0 ? defaultRanges : [width, height];
   const scales = useScales({ ranges, scales: scaleNames });
 
   const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [tooltip, setTooltip] = useState({});
 
-  const onOut = useCallback(() => {
+  const handleOut = useCallback((...argv) => {
     setTooltipVisible(false);
+
+    onOut(...argv);
   }, []);
 
-  const onOver = useCallback(
-    ({ color, index, transform, x, y }) => {
-      setTooltipVisible(true);
-      setTooltip({
-        color,
-        message: transform(
-          ...raw[index].map((coordinate, rindex) => {
-            const scale = scales[rindex];
-            const domain = scale.domain();
-            const mapped = scale(coordinate);
+  const handleTooltip = useCallback(
+    ({ color, index, x: tooltipX, y: tooltipY }) => {
+      const argv = [
+        ...domain[index].map((coordinate, rindex) => {
+          const scale = scales[rindex];
+          const mapped = scale(coordinate);
 
-            return mapped !== undefined ? coordinate : domain[coordinate];
-          }),
-          index,
-        ),
-        x: left + x,
-        y: top + y,
-      });
+          return mapped !== undefined ? coordinate : scale.domain()[coordinate];
+        }),
+        index,
+      ];
+      const message =
+        typeof tooltipMessage === 'function'
+          ? tooltipMessage(...argv)
+          : tooltipMessage;
+
+      if (message) {
+        setTooltipVisible(true);
+        setTooltip({ color, message, x: tooltipX + x, y: tooltipY + y });
+      }
     },
     [scales],
   );
 
-  const dimensions = (raw[0] || []).length;
+  const dimensions = (domain[0] || []).length;
 
   if (
-    raw.length === 0 ||
+    domain.length === 0 ||
     scales.length !== dimensions ||
     ranges.filter(Boolean).length !== dimensions
   ) {
     return null;
   }
 
-  const data = raw.map(axis =>
+  const data = domain.map(axis =>
     axis.map((coordinate, index) => {
       const scale = scales[index];
-      const domain = scale.domain();
       const mapped = scale(coordinate);
 
-      return mapped !== undefined ? mapped : scale(domain[coordinate]);
+      return mapped !== undefined ? mapped : scale.domain()[coordinate];
     }),
   );
 
   return (
-    <Layer
-      height={height}
-      label={name}
-      width={width}
-      x={offsetLeft}
-      y={offsetTop}
-    >
-      {children({ data, height, onOut, onOver, width })}
+    <Layer height={height} label={name} width={width} x={x} y={y}>
+      {children({
+        data,
+        height,
+        onTooltip: handleTooltip,
+        onOut: handleOut,
+        onOver,
+        range: data,
+        width,
+      })}
       <Tooltip opacity={isTooltipVisible ? 1 : 0} {...tooltip} />
     </Layer>
   );
@@ -91,18 +94,25 @@ const Serie = ({
 
 Serie.propTypes = {
   children: PropTypes.func,
-  color: PropTypes.string,
   data: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.arrayOf(PropTypes.number),
       PropTypes.number,
     ]),
   ),
-  left: PropTypes.number,
   name: PropTypes.string,
+  onOut: PropTypes.func,
+  onOver: PropTypes.func,
+  padding: PropTypes.shape({
+    bottom: PropTypes.number,
+    left: PropTypes.number,
+    right: PropTypes.number,
+    top: PropTypes.number,
+  }),
   ranges: PropTypes.arrayOf(PropTypes.number),
   scales: PropTypes.arrayOf(PropTypes.string),
-  top: PropTypes.number,
+  tooltip: PropTypes.func,
+  tooltipMessage: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
 };
 
 export default memo(Serie);
