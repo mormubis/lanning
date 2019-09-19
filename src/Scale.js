@@ -19,7 +19,7 @@ function tickStep(start, stop, ticks) {
   return step;
 }
 
-const Scale = ({ domain = [], name, ticks = 2, type }) => {
+const Scale = ({ domain = [], name, noRound = false, ticks = 2, type }) => {
   const { setScale } = useContext(Context);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Scale = ({ domain = [], name, ticks = 2, type }) => {
     const Type = Scales[!isContinuous ? 'point' : type] || Scales.linear;
 
     let fixed = domain;
-    if (isContinuous) {
+    if (isContinuous && !noRound) {
       const [start, stop] = domain;
       const step = tickStep(start, stop, ticks);
 
