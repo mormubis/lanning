@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import randomColor from 'randomcolor';
 import PropTypes from 'prop-types';
+import randomColor from 'randomcolor';
 
 import Bar from '../../Figures/Bar';
 import { memoize } from '../../utils';
