@@ -53,7 +53,7 @@ export const Pie = ({
 
   return (
     <>
-      <Scale domain={[0, 1]} name="pie" />
+      <Scale domain={[0, 1]} name="pie" noRound />
 
       <Serie
         {...props}

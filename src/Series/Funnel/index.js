@@ -38,7 +38,7 @@ const Funnel = ({
   return (
     <>
       <Scale domain={steps} name="steps" type="point" />
-      <Scale domain={[0, target]} name="target" />
+      <Scale domain={[0, target]} name="target" noRound />
 
       <Serie
         {...props}
