@@ -50,7 +50,7 @@ const Serie = ({
           ? tooltipMessage(...argv)
           : tooltipMessage;
 
-      if (message) {
+      if (message !== undefined) {
         setTooltipVisible(true);
         setTooltip({ color, message, x: tooltipX + x, y: tooltipY + y });
       }

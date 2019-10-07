@@ -97,7 +97,7 @@ Chart.propTypes = {
   colors: PropTypes.arrayOf(PropTypes.string),
   cornerRadius: PropTypes.number,
   delay: PropTypes.number,
-  domain: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number)),
+  domain: PropTypes.arrayOf(PropTypes.number),
   duration: PropTypes.number,
   height: PropTypes.number,
   onOut: PropTypes.func,
