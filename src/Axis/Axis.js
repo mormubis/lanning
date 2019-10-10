@@ -77,13 +77,13 @@ const Axis = ({
     );
   }
 
-  const ticks = (scale.ticks ? scale.ticks(nTicks) : scale.domain()).map(
-    (tick, index) => ({
-      label: tickFormat(tick, index),
+  const ticks = (scale.ticks ? scale.ticks(nTicks) : scale.domain())
+    .map((tick, index, array) => ({
+      label: tickFormat(tick, index, array),
       offset: scale(tick),
       value: tick,
-    }),
-  );
+    }))
+    .filter(tick => Boolean(tick.label));
 
   return (
     <>
