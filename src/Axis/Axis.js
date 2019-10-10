@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { extent } from 'd3';
+import { extent, scaleLinear } from 'd3';
 import PropTypes from 'prop-types';
 
 import { useScale } from '../Chart';
@@ -77,7 +77,21 @@ const Axis = ({
     );
   }
 
-  const ticks = (scale.ticks ? scale.ticks(nTicks) : scale.domain())
+  if (!scale.ticks) {
+    scale.ticks = count => {
+      const d3Domain = scale.domain();
+      const d3Ticks = scaleLinear([0, d3Domain.length], [0, 1]).ticks(count);
+
+      return count
+        ? d3Ticks
+            .map(tick => d3Domain[Math.round(tick)])
+            .filter(value => value !== undefined)
+        : d3Domain;
+    };
+  }
+
+  const ticks = scale
+    .ticks(nTicks)
     .map((tick, index, array) => ({
       label: tickFormat(tick, index, array),
       offset: scale(tick),
