@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import { Layer, SVG } from 'calvin-svg';
 // We want to include this little function in our own bundle
 // eslint-disable-next-line import/no-extraneous-dependencies
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 
 import Layout from './Layout';
 import Overlay, { Context as OverlayContext } from './Shapes/Overlay';
@@ -41,7 +41,7 @@ const useScales = ({ scales: names = [], ranges = [] }) => {
 };
 
 const useScale = ({ name, range }) => {
-  return useScales({ scales: [name], ranges: [range] })[0];
+  return useScales({ ranges: [range], scales: [name] })[0];
 };
 
 const Chart = ({
