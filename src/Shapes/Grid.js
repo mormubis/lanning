@@ -47,7 +47,10 @@ const Grid = ({
         <Line
           color={color}
           key={`${row}`}
-          points={[[0, row], [width, row]]}
+          points={[
+            [0, row],
+            [width, row],
+          ]}
           thickness={thickness}
         />
       ))}
@@ -56,7 +59,10 @@ const Grid = ({
           color={color}
           key={`${column}`}
           thickness={thickness}
-          points={[[column, 0], [column, height]]}
+          points={[
+            [column, 0],
+            [column, height],
+          ]}
         />
       ))}
     </Layer>
