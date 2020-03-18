@@ -1,6 +1,5 @@
 import external from 'rollup-plugin-auto-external';
 import babel from 'rollup-plugin-babel';
-import minify from 'rollup-plugin-babel-minify';
 import cjs from 'rollup-plugin-commonjs';
 import del from 'rollup-plugin-delete';
 import resolve from 'rollup-plugin-node-resolve';
@@ -45,14 +44,7 @@ const config = {
       'process.env.NODE_ENV': JSON.stringify(env),
     }),
     cjs(),
-    ...(isProduction
-      ? [
-          sizeSnapshot(),
-          minify({
-            comments: false,
-          }),
-        ]
-      : []),
+    ...(isProduction ? [sizeSnapshot()] : []),
     visualizer({ filename: './statistics.html' }),
   ],
 };
