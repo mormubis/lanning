@@ -82,9 +82,9 @@ const Serie = ({
       {children({
         data,
         height,
-        onTooltip: handleTooltip,
         onOut: handleOut,
         onOver,
+        onTooltip: handleTooltip,
         range: data,
         width,
       })}

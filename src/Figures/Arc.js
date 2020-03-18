@@ -47,11 +47,11 @@ const Arc = ({
             endAngle:
               prevEndAngle.current +
               (endAngle - prevEndAngle.current) * percentage,
-            thickness,
             height,
             startAngle:
               prevStartAngle.current +
               (startAngle - prevStartAngle.current) * percentage,
+            thickness,
             width,
           })
         }
@@ -78,8 +78,8 @@ Arc.propTypes = {
   cornerRadius: PropTypes.number,
   delay: PropTypes.number,
   duration: PropTypes.number,
-  endAngle: PropTypes.number.isRequired,
   ease: PropTypes.string,
+  endAngle: PropTypes.number.isRequired,
   height: PropTypes.number,
   opacity: PropTypes.number,
   startAngle: PropTypes.number.isRequired,
